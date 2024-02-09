@@ -2,7 +2,7 @@ import re
 import time
 
 from utils.common_utils import get_cas_url
-from utils.request_utils import get_auth_headers, get_auth_submit_headers
+from utils.request_utils import get_auth_headers
 from utils.encryption_utils import aes_cbc_encrypt_url, random_string
 import requests
 
@@ -65,7 +65,7 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
 
     # sleep for 2 seconds to avoid being blocked
     time.sleep(1)
-    submit_response = s.post(cas_url, data=submit_data, headers=get_auth_submit_headers(school_name), verify=False)
+    submit_response = s.post(cas_url, data=submit_data, headers=get_auth_headers(school_name), verify=False)
     # if success, the response will have a location header, follow the redirect and get the ticket and castgc
     # check if the request was redirected
     if submit_response.history:

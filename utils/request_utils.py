@@ -15,21 +15,12 @@ default_header = {
 
 
 def get_auth_headers(school_name: str) -> dict:
-    """return the auth headers for the specified school."""
-    header = default_header
-    match school_name:
-        case "nnu":
-            header["Host"] = "authserver.nnu.edu.cn"
-            header["Referer"] = "https://ehall.nnu.edu.cn/"
-            return header
-
-
-def get_auth_submit_headers(school_name: str) -> dict:
     """return the auth submit headers for the specified school."""
     header = default_header
     match school_name:
         case "nnu":
             header["Host"] = "authserver.nnu.edu.cn"
-            header["Referer"] = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench"
+            header[
+                "Referer"] = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench"
             header["Origin"] = "https://authserver.nnu.edu.cn"
             return header
