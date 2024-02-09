@@ -19,7 +19,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 - `school_name`: 学校名称，可详见学校支持列表。
 
-#### 请求体（选择一种格式）
+#### 请求体（json）
 
 - 使用用户名和密码登录：
   ```json
@@ -52,22 +52,10 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 #### 错误响应
 
 - **代码**：400
-- **内容（示例）**：
+- **响应示例**：
   ```json
   {
       "status": "error",
       "message": "Username and password are required"
-  }
-  ```
-  ```json
-  {
-      "status": "error",
-      "message": "No CAS URL found for {school_name}"
-  }
-  ```
-  ```json
-  {
-      "status": "error",
-      "message": "Failed to get password salt and execution"
   }
   ```
