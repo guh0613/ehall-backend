@@ -24,3 +24,8 @@ def get_auth_headers(school_name: str) -> dict:
                 "Referer"] = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench"
             header["Origin"] = "https://authserver.nnu.edu.cn"
             return header
+        case "ysu":
+            header["Host"] = "cer.ysu.edu.cn"
+            header["Referer"] = "https://cer.ysu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.ysu.edu.cn%2Flogin"
+            header["Origin"] = "https://cer.ysu.edu.cn"
+            return header

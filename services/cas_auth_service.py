@@ -12,7 +12,7 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
     if cas_url is None:
         return {
             'status': 'error',
-            'message': f'No CAS URL found for {school_name}'
+            'message': f'{school_name} is not supported'
         }, 400
 
     # create a session and get the auth page
