@@ -10,7 +10,6 @@ default_header = {
     "Sec-Fetch-Mode": "navigate",
     "Sec-Fetch-Site": "same-origin",
     "Priority": "u=0, i",
-    "Connection": "close",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.90 Safari/537.36"
 }
 
@@ -31,6 +30,6 @@ def get_auth_submit_headers(school_name: str) -> dict:
     match school_name:
         case "nnu":
             header["Host"] = "authserver.nnu.edu.cn"
-            header[
-                "Referer"] = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench"
+            header["Referer"] = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench"
+            header["Origin"] = "https://authserver.nnu.edu.cn"
             return header
