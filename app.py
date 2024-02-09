@@ -1,11 +1,13 @@
-from flask import Flask
+from flask import Flask, request
+from handlers.login_handler import cas_login_handler
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+@app.route('/api/cas_login/<school_name>', methods=['POST'])
+def cas_login(school_name):
+    login_data = request.json
+    return cas_login_handler(school_name, login_data)
 
 
 if __name__ == '__main__':
