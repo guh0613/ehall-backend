@@ -13,10 +13,3 @@ def cas_login_handler(school_name: str, login_data: dict):
             }, 400
         # authenticate the user
         return cas_authenticate(school_name, login_data['username'], login_data['password'])
-
-
-
-    return {
-        'status': 'success',
-        'message': f'Logged in to {school_name}'
-    }, 200
