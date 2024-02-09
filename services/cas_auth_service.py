@@ -14,9 +14,12 @@ def cas_authenticate(school_name: str, username: str, password: str) -> tuple[di
             'status': 'error',
             'message': f'No CAS URL found for {school_name}'
         }, 400
+
+    # create a session and get the auth page
     s = requests.Session()
     s.headers.update(get_auth_headers(school_name))
     auth_response = s.get(cas_url, verify=False)
+
     # check the response body,and use regex to find the password salt and execution
     pattern = (r'<input type="hidden" id="pwdEncryptSalt" value="(.+?)" /><input type="hidden" id="execution" '
                r'name="execution" value="(.+?)" />')
@@ -28,7 +31,8 @@ def cas_authenticate(school_name: str, username: str, password: str) -> tuple[di
         }, 400
     salt = match.group(1)
     execution = match.group(2)
-    # encrypt the password, iv is the salt
+
+    # encrypt the password, iv is randomly generated
     encrypted_password = aes_cbc_encrypt_url((random_string(64)+password).encode(), salt.encode())
     submit_data = {
         'username': username,
@@ -41,6 +45,8 @@ def cas_authenticate(school_name: str, username: str, password: str) -> tuple[di
         'execution': execution,
 
     }
+
+    # sleep for 2 seconds to avoid being blocked
     time.sleep(2)
     submit_response = s.post(cas_url, data=submit_data, headers=get_auth_submit_headers(school_name), verify=False)
     # if success, the response will have a location header, follow the redirect and get the ticket and castgc

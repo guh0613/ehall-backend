@@ -1,8 +1,6 @@
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
-from Crypto.Random import get_random_bytes
 from base64 import b64encode
-from urllib.parse import quote
 import random
 
 
