@@ -85,3 +85,15 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       }
   }
   ```
+
+## 特别响应
+
+若请求提交的票据(`CASTGC`或`MOD_AUTH_CAS`)无效或过期，响应中的`status`会变为`invalid`。
+
+- **响应示例**:
+    ```json
+    {
+        "status": "invalid",
+        "message": "Failed to login.CASTGC is probably invalid"
+    }
+    ```
