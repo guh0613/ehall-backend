@@ -2,14 +2,18 @@ import requests
 
 from utils.common_utils import get_ehall_url
 from utils.request_utils import default_header
+from utils.cas_cache_utils import get_mod_auth_cas
 
 
-def get_user_info(school_name: str, mod_auth_cas: str) -> tuple[dict, int]:
+def get_user_info(school_name: str, token: str) -> tuple[dict, int]:
     # check if school is supported
     ehall_url = get_ehall_url(school_name)
     if ehall_url is None:
         return {'status': 'error', 'message': f'{school_name} is not supported'}, 400
 
+    mod_auth_cas = get_mod_auth_cas(school_name, token)
+    if mod_auth_cas is None:
+        return {'status': 'error', 'message': 'Failed to get user info. auth_token is probably invalid.'}, 401
     # get user info
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)

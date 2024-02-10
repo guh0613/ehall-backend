@@ -13,8 +13,8 @@ def cas_login(school_name):
 
 @app.route('/api/<school_name>/user/info', methods=['GET'])
 def user_info(school_name):
-    mod_auth_cas = request.headers.get('Authorization')
-    return user_info_handler(school_name, mod_auth_cas)
+    auth_token = request.headers.get('Authorization')
+    return user_info_handler(school_name, auth_token)
 
 
 if __name__ == '__main__':

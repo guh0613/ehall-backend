@@ -7,7 +7,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 ### CAS 登录
 
-用于向学校后端cas服务器进行登录请求，保持登录状态以及获取身份验证票据。
+用于向学校后端cas服务器进行登录请求，保持登录状态以及获取登录token。
 
 - **请求URL**:
   `/api/<school_name>/cas_login`
@@ -21,18 +21,10 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求体（json）
 
-- 使用用户名和密码登录：
   ```json
   {
       "username": "114514",
       "password": "password"
-  }
-  ```
-
-- 使用`CASTGC`登录：
-  ```json
-  {
-      "CASTGC": "TGT-114514-xxxxxx"
   }
   ```
 
@@ -44,8 +36,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   {
       "status": "OK",
       "message": "Login successful",
-      "CASTGC": "TGT-114514-xxxxxx",
-      "MOD_AUTH_CAS": "MOD_AUTH_ST-114514-xxxxxx"
+      "auth_token": "TGT-114514-xxxxxx",
   }
   ```
 
@@ -66,7 +57,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求头
 
-- `Authorization`: `MOD_AUTH_CAS`票据。
+- `Authorization`: `auth_token`
 
 #### 成功响应
 
@@ -88,13 +79,13 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 ## 特别响应
 
-若请求提交的票据(`CASTGC`或`MOD_AUTH_CAS`)无效或过期，响应中的`status`会变为`invalid`。
+若请求头中的`auth_token`无效或过期，响应中的`status`会变为`invalid`。
 
 - **代码**：401
 - **响应示例**:
     ```json
     {
         "status": "invalid",
-        "message": "Failed to login.CASTGC is probably invalid"
+        "message": "Failed to get user info.auth_token is probably invalid"
     }
     ```

@@ -4,10 +4,11 @@ import time
 from utils.common_utils import get_cas_url
 from utils.request_utils import get_auth_headers
 from utils.encryption_utils import aes_cbc_encrypt_url, random_string
+from utils.cas_cache_utils import set_mod_auth_cas
 import requests
 
 
-def cas_authenticate(school_name: str, username: str = '', password: str = '', castgc: str = None) -> tuple[dict, int]:
+def cas_authenticate(school_name: str, username: str, password: str) -> tuple[dict, int]:
     cas_url = get_cas_url(school_name)
     if cas_url is None:
         return {
@@ -19,22 +20,6 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
     s = requests.Session()
     s.headers.update(get_auth_headers(school_name))
 
-    # check if castgc is provided, if so, use it to authenticate
-    if castgc is not None:
-        s.cookies.set('CASTGC', castgc)
-        auth_response = s.get(cas_url, verify=False)
-        if auth_response.history:
-            for resp in auth_response.history:
-                location = resp.headers.get('Location')
-                ticket = re.search(r'ticket=([^&#]+)', location).group(1)
-                mod_auth_cas = "MOD_AUTH_" + ticket
-                return {'status': 'OK',
-                        'message': 'Login successful',
-                        'mod_auth_cas': mod_auth_cas}, 200
-        else:
-            return {'status': 'invalid', 'message': 'Failed to login.CASTGC is probably invalid'}, 401
-
-    # no castgc provided, use the username and password to authenticate
     auth_response = s.get(cas_url, verify=False)
 
     # check the response body,and use regex to find the password salt and execution
@@ -75,10 +60,10 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
             ticket = re.search(r'ticket=([^&#]+)', location).group(1)
             castgc = resp.cookies.get('CASTGC')
             mod_auth_cas = "MOD_AUTH_" + ticket
+            set_mod_auth_cas(castgc, mod_auth_cas)
             return {'status': 'OK',
                     'message': 'Login successful',
-                    'castgc': castgc,
-                    'mod_auth_cas': mod_auth_cas}, 200
+                    'auth_token': castgc}, 200
     else:
         return {'status': 'error', 'message': 'Failed to login'}, 400
 
