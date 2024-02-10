@@ -10,7 +10,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 用于向学校后端cas服务器进行登录请求，保持登录状态以及获取身份验证票据。
 
 - **请求URL**:
-  `/api/cas_login/<school_name>`
+  `/api/<school_name>/cas_login`
 
 - **请求方法**:
   `POST`
@@ -42,8 +42,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 - **响应示例**：
   ```json
   {
-      "status": "success",
-      "message": "Logged in successfully",
+      "status": "OK",
+      "message": "Login successful",
       "castgc": "TGT-114514-xxxxxx",(使用账号密码登录时)
       "mod_auth_cas": "MOD_AUTH_ST-114514-xxxxxx"
   }

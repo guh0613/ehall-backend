@@ -26,10 +26,10 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
         if auth_response.history:
             for resp in auth_response.history:
                 location = resp.headers.get('Location')
-                ticket = re.search(r'ticket=(ST-\d+-\w+)', location).group(1)
+                ticket = re.search(r'ticket=([^&#]+)', location).group(1)
                 mod_auth_cas = "MOD_AUTH_" + ticket
                 return {'status': 'OK',
-                        'message': 'Logged in successfully',
+                        'message': 'Login successful',
                         'mod_auth_cas': mod_auth_cas}, 200
         else:
             return {'status': 'error', 'message': 'Failed to login.CASTGC is probably invalid'}, 400
@@ -63,19 +63,20 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
 
     }
 
-    # sleep for 2 seconds to avoid being blocked
+    # sleep for 1 seconds to avoid being blocked
     time.sleep(1)
     submit_response = s.post(cas_url, data=submit_data, headers=get_auth_headers(school_name), verify=False)
+
     # if success, the response will have a location header, follow the redirect and get the ticket and castgc
     # check if the request was redirected
     if submit_response.history:
         for resp in submit_response.history:
             location = resp.headers.get('Location')
-            ticket = re.search(r'ticket=(ST-\d+-\w+)', location).group(1)
+            ticket = re.search(r'ticket=([^&#]+)', location).group(1)
             castgc = resp.cookies.get('CASTGC')
             mod_auth_cas = "MOD_AUTH_" + ticket
             return {'status': 'OK',
-                    'message': 'Logged in successfully',
+                    'message': 'Login successful',
                     'castgc': castgc,
                     'mod_auth_cas': mod_auth_cas}, 200
     else:
