@@ -3,8 +3,8 @@ from services.cas_auth_service import cas_authenticate
 
 def cas_login_handler(school_name: str, login_data: dict):
     # the post data must have username and password, or castgc instead.
-    if 'castgc' in login_data:
-        return cas_authenticate(school_name, castgc=login_data['castgc'])
+    if 'CASTGC' in login_data:
+        return cas_authenticate(school_name, castgc=login_data['CASTGC'])
     else:
         if 'username' not in login_data or 'password' not in login_data:
             return {
