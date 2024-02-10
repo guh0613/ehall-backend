@@ -9,13 +9,6 @@ from utils.request_utils import get_auth_headers, default_header
 cache = TTLCache(maxsize=1024, ttl=1800)
 
 
-def is_mod_auth_cas_expired(school_name, mod_auth_cas):
-    result = query_user_info(school_name, mod_auth_cas)
-    if result == 200:
-        return False
-    return True
-
-
 def refresh_mod_auth_cas(school_name, castgc):
     cas_url = get_cas_url(school_name)
     s = requests.Session()
@@ -35,7 +28,7 @@ def refresh_mod_auth_cas(school_name, castgc):
 
 def get_mod_auth_cas(school_name, castgc):
     mod_auth_cas = cache.get(castgc)
-    if mod_auth_cas is None or is_mod_auth_cas_expired(school_name, mod_auth_cas):
+    if mod_auth_cas is None:
         mod_auth_cas = refresh_mod_auth_cas(school_name, castgc)
         if mod_auth_cas is None:
             return None
@@ -46,24 +39,3 @@ def get_mod_auth_cas(school_name, castgc):
 def set_mod_auth_cas(castgc, mod_auth_cas):
     cache[castgc] = mod_auth_cas
     return True
-
-
-def query_user_info(school_name: str, mod_auth_cas: str) -> int:
-    ehall_url = get_ehall_url(school_name)
-    s = requests.Session()
-    s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)
-    s.headers.update(default_header)
-    query_url = ehall_url + '//jsonp/ywtb/info/getUserInfoAndSchoolInfo.json'
-    response = s.get(query_url, verify=False)
-    # check if the response is valid
-    if response.status_code != 200:
-        return 400
-    try:
-        user_info_orig = response.json()['data']
-    except Exception:
-        return 400
-    # if MOD_AUTH_CAS is invalid, the values in "data" will be null
-    if user_info_orig['userName'] is None:
-        return 401
-
-    return 200
