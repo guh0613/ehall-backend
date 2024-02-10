@@ -16,7 +16,6 @@ def is_mod_auth_cas_expired(school_name, mod_auth_cas):
     return True
 
 
-# 假设的使用CASTGC刷新MOD_AUTH_CAS的方法
 def refresh_mod_auth_cas(school_name, castgc):
     cas_url = get_cas_url(school_name)
     s = requests.Session()
@@ -51,31 +50,20 @@ def set_mod_auth_cas(castgc, mod_auth_cas):
 
 def query_user_info(school_name: str, mod_auth_cas: str) -> int:
     ehall_url = get_ehall_url(school_name)
-    # get user info
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)
     s.headers.update(default_header)
-
     query_url = ehall_url + '//jsonp/ywtb/info/getUserInfoAndSchoolInfo.json'
     response = s.get(query_url, verify=False)
-
-    # check if the response is valid, and get 'username', 'userid', 'userType', 'userDepartment',  'userSex'
+    # check if the response is valid
     if response.status_code != 200:
         return 400
     try:
         user_info_orig = response.json()['data']
     except Exception:
         return 400
-    user_info: dict = {'status': 'OK', 'message': 'User info retrieved successfully',
-                       'data': {
-                           'userName': user_info_orig['userName'], 'userId': user_info_orig['userId'],
-                           'userType': user_info_orig['userTypeName'],
-                           'userDepartment': user_info_orig['userDepartment'],
-                           'userSex': user_info_orig['userSex']
-                       }
-                       }
     # if MOD_AUTH_CAS is invalid, the values in "data" will be null
-    if user_info['data']['userName'] is None:
+    if user_info_orig['userName'] is None:
         return 401
 
     return 200

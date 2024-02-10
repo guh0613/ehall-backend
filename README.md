@@ -36,7 +36,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   {
       "status": "OK",
       "message": "Login successful",
-      "auth_token": "TGT-114514-xxxxxx",
+      "auth_token": "TGT-114514-xxxxxx"
   }
   ```
 
