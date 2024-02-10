@@ -68,6 +68,6 @@ def cas_authenticate(school_name: str, username: str, password: str) -> tuple[di
         return {'status': 'error', 'message': 'Failed to login'}, 400
 
     return {
-        'status': 'error',
+        'status': 'retry',
         'message': 'Unknown error. Please try again'
-    }, 400
+    }, 402
