@@ -44,18 +44,44 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   {
       "status": "OK",
       "message": "Login successful",
-      "castgc": "TGT-114514-xxxxxx",(使用账号密码登录时)
+      "castgc": "TGT-114514-xxxxxx",
       "mod_auth_cas": "MOD_AUTH_ST-114514-xxxxxx"
   }
   ```
 
-#### 错误响应
 
-- **代码**：400
+### 用户信息
+
+用于获取用户信息。
+
+- **请求URL**:
+  `/api/<school_name>/user/info`
+
+- **请求方法**:
+  `GET`
+
+#### URL参数
+
+- `school_name`: 学校名称。
+
+#### 请求头
+
+- `Authorization`: `MOD_AUTH_CAS`票据。
+
+#### 成功响应
+
+- **代码**：200
 - **响应示例**：
   ```json
   {
-      "status": "error",
-      "message": "Username and password are required"
+      "status": "OK",
+      "message": "User info retrieved successfully",
+      "data": {
+          "username": "李田所",
+          "userId": "114514",
+          "userType": "学生",
+          "userDepartment": "计算机科学与技术学院",
+          "userSex": "男"
+      }
   }
   ```

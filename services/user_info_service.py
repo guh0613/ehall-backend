@@ -29,7 +29,7 @@ def get_user_info(school_name: str, mod_auth_cas: str) -> tuple[dict, int]:
         return {'status': 'error', 'message': f'Unknown: {str(e)}'}, 400
     user_info: dict = {'status': 'OK', 'message': 'User info retrieved successfully',
                        'data': {
-                           'username': user_info_orig['userName'], 'userid': user_info_orig['userId'],
+                           'userName': user_info_orig['userName'], 'userId': user_info_orig['userId'],
                            'userType': user_info_orig['userTypeName'],
                            'userDepartment': user_info_orig['userDepartment'],
                            'userSex': user_info_orig['userSex']
