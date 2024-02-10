@@ -29,10 +29,10 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   }
   ```
 
-- 使用`castgc`登录：
+- 使用`CASTGC`登录：
   ```json
   {
-      "castgc": "TGT-114514-xxxxxx"
+      "CASTGC": "TGT-114514-xxxxxx"
   }
   ```
 
@@ -44,8 +44,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   {
       "status": "OK",
       "message": "Login successful",
-      "castgc": "TGT-114514-xxxxxx",
-      "mod_auth_cas": "MOD_AUTH_ST-114514-xxxxxx"
+      "CASTGC": "TGT-114514-xxxxxx",
+      "MOD_AUTH_CAS": "MOD_AUTH_ST-114514-xxxxxx"
   }
   ```
 
@@ -77,7 +77,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "status": "OK",
       "message": "User info retrieved successfully",
       "data": {
-          "username": "李田所",
+          "userName": "李田所",
           "userId": "114514",
           "userType": "学生",
           "userDepartment": "计算机科学与技术学院",
