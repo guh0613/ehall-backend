@@ -35,6 +35,6 @@ def get_user_info(school_name: str, mod_auth_cas: str) -> tuple[dict, int]:
                        }
     # if MOD_AUTH_CAS is invalid, the values in "data" will be null
     if user_info['data']['userName'] is None:
-        return {'status': 'invalid', 'message': 'Failed to get user info.MOD_AUTH_CAS is probably invalid'}, 400
+        return {'status': 'invalid', 'message': 'Failed to get user info.MOD_AUTH_CAS is probably invalid'}, 401
 
     return user_info, 200

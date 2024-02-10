@@ -32,7 +32,7 @@ def cas_authenticate(school_name: str, username: str = '', password: str = '', c
                         'message': 'Login successful',
                         'mod_auth_cas': mod_auth_cas}, 200
         else:
-            return {'status': 'invalid', 'message': 'Failed to login.CASTGC is probably invalid'}, 400
+            return {'status': 'invalid', 'message': 'Failed to login.CASTGC is probably invalid'}, 401
 
     # no castgc provided, use the username and password to authenticate
     auth_response = s.get(cas_url, verify=False)
