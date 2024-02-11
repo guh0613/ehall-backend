@@ -1,6 +1,6 @@
 from flask import Flask, request
 from handlers.login_handler import cas_login_handler
-from handlers.user_handler import user_info_handler
+from handlers.user_handler import user_info_handler, user_score_handler
 
 app = Flask(__name__)
 
@@ -15,6 +15,15 @@ def cas_login(school_name):
 def user_info(school_name):
     auth_token = request.headers.get('Authorization')
     return user_info_handler(school_name, auth_token)
+
+
+@app.route('/api/<school_name>/user/score', methods=['GET', 'POST'])
+def user_score(school_name):
+    auth_token = request.headers.get('Authorization')
+    if request.method == 'GET':
+        return user_score_handler(school_name, auth_token, {})
+    score_request_data = request.json
+    return user_score_handler(school_name, auth_token, score_request_data)
 
 
 if __name__ == '__main__':

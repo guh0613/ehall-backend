@@ -3,10 +3,10 @@ import re
 from cachetools import TTLCache
 import requests
 
-from utils.common_utils import get_cas_url, get_ehall_url
-from utils.request_utils import get_auth_headers, default_header
+from utils.common_utils import get_cas_url
+from utils.request_utils import get_auth_headers
 
-cache = TTLCache(maxsize=1024, ttl=1800)
+cache = TTLCache(maxsize=1024, ttl=2400)
 
 
 def refresh_mod_auth_cas(school_name, castgc):
