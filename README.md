@@ -4,11 +4,11 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 ## 学校支持情况
 详见[学校支持列表](docs/school_support.md)
 ## API端点
-- [CAS登录](#CAS 登录)
+- [CAS登录](#CAS登录)
 - [用户信息](#用户信息)
 - [用户成绩](#用户成绩)
 
-### CAS 登录
+### CAS登录
 
 用于向学校后端cas服务器进行登录请求，保持登录状态以及获取登录token。
 
