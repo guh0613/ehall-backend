@@ -22,7 +22,6 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
         del s.headers['Referer']
 
     # get weu first,it will automatically be set-cookie
-    # the amp-version and gid are required, or it will get a 403.However, the value of gid doesn't matter
     query_weu_url = ehall_url + '/appShow?appId=4768574631264620'
     response = s.get(query_weu_url, verify=False)
     if response.status_code != 200:
@@ -80,8 +79,8 @@ def transform_data(original_json):
             "regularPercent": row.get("PSCJXS", ""),
             "midPercent": row.get("QZCJXS", ""),
             "finalPercent": row.get("QMCJXS", ""),
-            "lessonType": row.get("KCXZDM_DISPLAY", ""),
-            "lessonCate": row.get("KCLBDM_DISPLAY", ""),
+            "courseType": row.get("KCXZDM_DISPLAY", ""),
+            "courseCate": row.get("KCLBDM_DISPLAY", ""),
             "isRetake": row.get("CXCKDM_DISPLAY", ""),
             "credits": row.get("XF", 0),
             "gradeType": row.get("DJCJLXDM_DISPLAY", ""),
