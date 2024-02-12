@@ -5,7 +5,7 @@ CAS_SERVER_URLS = {
 }
 
 EHALL_SERVER_URLS = {
-    'nnu': 'https://ehall.nnu.edu.cn',
+    'nnu': 'https://ehall.nnu.edu.cn'
 }
 
 EHALLAPP_SERVER_URLS = {

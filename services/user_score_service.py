@@ -1,13 +1,14 @@
 import requests
 
 from utils.cas_cache_utils import get_mod_auth_cas
-from utils.common_utils import get_ehallapp_url
+from utils.common_utils import get_ehall_url, get_ehallapp_url
 from utils.request_utils import default_header
 
 
 def get_user_score(school_name: str, token: str, semester: str, amount: int) -> tuple[dict, int]:
     ehallapp_url = get_ehallapp_url(school_name)
-    if ehallapp_url is None:
+    ehall_url = get_ehall_url(school_name)
+    if (ehallapp_url or ehall_url) is None:
         return {'status': 'error', 'message': f'{school_name} is not supported'}, 400
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
@@ -22,7 +23,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
 
     # get weu first,it will automatically be set-cookie
     # the amp-version and gid are required, or it will get a 403.However, the value of gid doesn't matter
-    query_weu_url = ehallapp_url + '/jwapp/sys/cjcx/*default/index.do?&amp_sec_version_=1&gid_=WGhYYWREa2ZBczZBZnNrdTF2aEhma2lWbnlnd1IxT21ubUpoaWtZeHdKVmZlQUVKalQrSzBmUm5NQ1FPUkR1ditON1E5SFc4dTV1cEF6aW1UamRCSFE9PM'
+    query_weu_url = ehall_url + '/appShow?appId=4768574631264620'
     response = s.get(query_weu_url, verify=False)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get user score.Please try again'}, 402
