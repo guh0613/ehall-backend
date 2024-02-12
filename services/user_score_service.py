@@ -21,6 +21,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
         del s.headers['Referer']
 
     # get weu first,it will automatically be set-cookie
+    # the amp-version and gid are required, or it will get a 403.However, the value of gid doesn't matter
     query_weu_url = ehallapp_url + '/jwapp/sys/cjcx/*default/index.do?&amp_sec_version_=1&gid_=WGhYYWREa2ZBczZBZnNrdTF2aEhma2lWbnlnd1IxT21ubUpoaWtZeHdKVmZlQUVKalQrSzBmUm5NQ1FPUkR1ditON1E5SFc4dTV1cEF6aW1UamRCSFE9PM'
     response = s.get(query_weu_url, verify=False)
     if response.status_code != 200:
@@ -61,8 +62,8 @@ def get_query_score_data(semester: str, amount: int):
 def transform_data(original_json):
     result = {
         "status": "OK",
-        "message": "get user score successfully",
-        "totalnum": original_json["datas"]["xscjcx"]["totalSize"],
+        "message": "User score retrieved successfully",
+        "totalCount": original_json["datas"]["xscjcx"]["totalSize"],
         "data": {}
     }
 
