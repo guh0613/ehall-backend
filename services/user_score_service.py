@@ -29,12 +29,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
     s.headers['Accept'] = 'application/json, text/javascript, */*; q=0.01'
 
     query_score_url = ehallapp_url + '/jwapp/sys/cjcx/modules/cjcx/xscjcx.do'
-    query_score_data = {
-        'querySetting': '[{"name":"XNXQDM","value":"' + semester + '","linkOpt":"and","builder":"m_value_equal"},{"name":"SFYX","caption":"是否有效","linkOpt":"AND","builderList":"cbl_m_List","builder":"m_value_equal","value":"1","value_display":"是"}]',
-        '*order': 'KCH,KXH',
-        'pageSize': amount,
-        'pageNumber': 1
-    }
+    query_score_data = get_query_score_data(semester, amount)
     response = s.post(query_score_url, data=query_score_data, verify=False)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get user score.Please try again'}, 402
@@ -42,6 +37,25 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
     original_json = response.json()
     # transform the json
     return transform_data(original_json), 200
+
+
+def get_query_score_data(semester: str, amount: int):
+    if semester == 'all':
+        query_score_data = {
+            'querySetting': '[{"name": "SFYX", "caption": "是否有效", "linkOpt": "AND", "builderList": "cbl_m_List","builder": "m_value_equal", "value": "1", "value_display": "是"},{"name": "SHOWMAXCJ", "caption": "显示最高成绩", "linkOpt": "AND", "builderList": "cbl_String","builder": "equal", "value": 0, "value_display": "否"}]',
+            '*order': '-XNXQDM, -KCH, -KXH',
+            'pageSize': amount,
+            'pageNumber': 1
+        }
+        return query_score_data
+    else:
+        query_score_data = {
+            'querySetting': '[{"name":"XNXQDM","value":"' + semester + '","linkOpt":"and","builder":"m_value_equal"},{"name":"SFYX","caption":"是否有效","linkOpt":"AND","builderList":"cbl_m_List","builder":"m_value_equal","value":"1","value_display":"是"}]',
+            '*order': 'KCH,KXH',
+            'pageSize': amount,
+            'pageNumber': 1
+        }
+        return query_score_data
 
 
 def transform_data(original_json):
