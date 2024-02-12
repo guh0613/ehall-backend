@@ -1,6 +1,8 @@
 # ehall-backend
 ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服务端可向不同学校的一站式事务大厅后端服务器获取各类数据。
 
+## 学校支持情况
+详见[学校支持列表](docs/school_support.md)
 ## API端点
 - [CAS登录](#CAS 登录)
 - [用户信息](#用户信息)
@@ -18,7 +20,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### URL参数
 
-- `school_name`: 学校名称，可详见学校支持列表。
+- `school_name`: 学校名称。
 
 #### 请求体（json）
 
