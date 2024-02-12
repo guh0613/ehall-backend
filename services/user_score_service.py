@@ -57,7 +57,7 @@ def transform_data(original_json):
         course_data = {
             "exam_time": row.get("KSSJ", ""),
             "totalScore": row.get("ZCJ", 0),
-            "gradePoint": row.get("XFJD", 0),
+            "gradePoint": '{:.1f}'.format(row.get("XFJD", 0)),
             "regularScore": row.get("PSCJ", ""),
             "midScore": row.get("QZCJ_DISPLAY", ""),
             "finalScore": row.get("QMCJ", ""),
