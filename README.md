@@ -115,15 +115,17 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
     "status": "OK",
     "message": "User score retrieved successfully",
     "totalCount": 42,
-    "data": {
-      "绳之以法的正确姿势概论": {
-        "exam_time": "2024-01-17",
+    "data": [
+      {
+        "lessonName": "绳之以法的正确姿势概论",
+        "examTime": "2024-01-17",
         "totalScore": 100,
         "gradePoint": 5.0,
         "regularScore": "100",
         "midScore": "100",
         "finalScore": "100",
         "regularPercent": "30",
+        "midPercent": "30",
         "finalPercent": "40",
         "lessonType": "必修课",
         "lessonCate": "公共必修课程",
@@ -133,7 +135,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
         "semester": "2023-2024学年第1学期",
         "department": "和蔼学院"
         }
-     }
+     ]
   }
   ```
 

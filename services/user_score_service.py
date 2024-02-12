@@ -64,19 +64,20 @@ def transform_data(original_json):
         "status": "OK",
         "message": "User score retrieved successfully",
         "totalCount": original_json["datas"]["xscjcx"]["totalSize"],
-        "data": {}
+        "data": []
     }
 
     for row in original_json.get("datas", {}).get("xscjcx", {}).get("rows", []):
-        course_name = row.get("XSKCM", "Unknown Course")
         course_data = {
-            "exam_time": row.get("KSSJ", ""),
+            "courseName": row.get("XSKCM", "Unknown Course"),
+            "examTime": row.get("KSSJ", ""),
             "totalScore": row.get("ZCJ", 0),
             "gradePoint": '{:.1f}'.format(row.get("XFJD", 0)),
             "regularScore": row.get("PSCJ", ""),
-            "midScore": row.get("QZCJ_DISPLAY", ""),
+            "midScore": row.get("QZCJ", ""),
             "finalScore": row.get("QMCJ", ""),
             "regularPercent": row.get("PSCJXS", ""),
+            "midPercent": row.get("QZCJXS", ""),
             "finalPercent": row.get("QMCJXS", ""),
             "lessonType": row.get("KCXZDM_DISPLAY", ""),
             "lessonCate": row.get("KCLBDM_DISPLAY", ""),
@@ -95,6 +96,6 @@ def transform_data(original_json):
                 other_scores[f"otherScore{i}"] = qtcj_value
         course_data.update(other_scores)
 
-        result["data"][course_name] = course_data
+        result["data"].append(course_data)
 
     return result
