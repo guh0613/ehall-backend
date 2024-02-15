@@ -24,3 +24,6 @@ def get_auth_headers(school_name: str) -> dict:
         case "ysu":
             header["Referer"] = "https://cer.ysu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.ysu.edu.cn%2Flogin"
             return header
+        case "nuaa":
+            header["Referer"] = "https://authserver.nuaa.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nuaa.edu.cn%2Fsso%2Flogin"
+            return header
