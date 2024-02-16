@@ -122,6 +122,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       {
         "courseName": "绳之以法的正确姿势概论",
         "examTime": "2024-01-17",
+        "courseId": "114514",
+        "classId": "1919810",
         "totalScore": 100,
         "gradePoint": "5.0",
         "regularScore": "100",
