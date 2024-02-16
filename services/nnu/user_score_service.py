@@ -70,6 +70,8 @@ def transform_data(original_json):
     for row in original_json.get("datas", {}).get("xscjcx", {}).get("rows", []):
         course_data = {
             "courseName": row.get("XSKCM", "Unknown Course"),
+            "courseId": row.get("KCH", ""),
+            "classId": row.get("JXBID", ""),
             "examTime": row.get("KSSJ", ""),
             "totalScore": row.get("ZCJ", 0),
             "gradePoint": str(round(row.get("XFJD", 0), 1)),
