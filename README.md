@@ -176,8 +176,9 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 - **响应示例**:
   ```json
   {
-    "status": "OK",
-    "message": "Score rank retrieved successfully",
+  "status": "OK",
+  "message": "Score rank retrieved successfully",
+  "data":{
     "class": {
       "rank": 49,
       "totalPeopleNum": 96,
@@ -202,6 +203,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "60num": 1,
       "50num": 1
     }
+  }
   }
   ```
   **注：**
