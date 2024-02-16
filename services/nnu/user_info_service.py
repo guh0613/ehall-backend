@@ -8,8 +8,6 @@ from utils.nnu.cas_cache_utils import get_mod_auth_cas
 def get_user_info(school_name: str, token: str) -> tuple[dict, int]:
     # check if school is supported
     ehall_url = get_ehall_url(school_name)
-    if ehall_url is None:
-        return {'status': 'error', 'message': f'{school_name} is not supported'}, 400
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:

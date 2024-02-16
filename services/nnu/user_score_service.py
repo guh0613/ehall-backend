@@ -8,8 +8,6 @@ from utils.request_utils import default_header
 def get_user_score(school_name: str, token: str, semester: str, amount: int) -> tuple[dict, int]:
     ehallapp_url = get_ehallapp_url(school_name)
     ehall_url = get_ehall_url(school_name)
-    if (ehallapp_url or ehall_url) is None:
-        return {'status': 'error', 'message': f'{school_name} is not supported'}, 400
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:
@@ -86,7 +84,7 @@ def transform_data(original_json):
             "isRetake": row.get("CXCKDM_DISPLAY", ""),
             "credits": row.get("XF", 0),
             "gradeType": row.get("DJCJLXDM_DISPLAY", ""),
-            "semester": row.get("XNXQDM_DISPLAY", ""),
+            "semester": row.get("XNXQDM", ""),
             "department": row.get("KKDWDM_DISPLAY", "")
         }
 
