@@ -14,7 +14,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 用于向学校后端cas服务器进行登录请求，保持登录状态以及获取登录token。
 
 - **请求URL**:
-  `/api/<school_name>/cas_login`
+  `/<school_name>/cas_login`
 
 - **请求方法**:
   `POST`
@@ -50,7 +50,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 用于获取用户信息。
 
 - **请求URL**:
-  `/api/<school_name>/user/info`
+  `/<school_name>/user/info`
 
 - **请求方法**:
   `GET`
@@ -85,7 +85,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 用于查询用户成绩信息。
 
 - **请求URL**:
-  `/api/<school_name>/user/score`
+  `/<school_name>/user/score`
 
 - **请求方法**:
   `GET`, `POST`
@@ -147,7 +147,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 ### 学科成绩排名
 - **请求URL**:
-  `/api/<school_name>/user/score_rank`
+  `/<school_name>/user/score_rank`
 - **请求方法**: `POST`
 
 #### URL参数
