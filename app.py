@@ -1,6 +1,6 @@
 from flask import Flask, request
 from handlers.login_handler import cas_login_handler
-from handlers.user_handler import user_info_handler, user_score_handler, score_rank_handler
+from handlers.user_handler import user_info_handler, user_score_handler, score_rank_handler, course_table_handler
 
 app = Flask(__name__)
 
@@ -31,6 +31,12 @@ def score_rank(school_name):
     auth_token = request.headers.get('Authorization')
     score_rank_request_data = request.json
     return score_rank_handler(school_name, auth_token, score_rank_request_data)
+
+@app.route('/<school_name>/user/course_table', methods=['GET', 'POST'])
+def course_table(school_name):
+    auth_token = request.headers.get('Authorization')
+    course_table_request_data = request.json
+    return course_table_handler(school_name, auth_token, course_table_request_data)
 
 
 if __name__ == '__main__':

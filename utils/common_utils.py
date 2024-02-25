@@ -11,6 +11,11 @@ def get_ehall_url(school_name: str) -> str:
     return config.EHALL_SERVER_URLS.get(school_name, None)
 
 
-def get_ehallapp_url(school_name: str) -> str:
+def get_ehallapp_url(school_name: str, ishttps: bool = True) -> str:
     """return the eHallApp URL for the specified school."""
-    return config.EHALLAPP_SERVER_URLS.get(school_name, None)
+    if ishttps:
+        return config.EHALLAPP_SERVER_URLS.get(school_name, None)
+    else:
+        # convert https url to http url
+        url = config.EHALLAPP_SERVER_URLS.get(school_name, None)
+        return url
