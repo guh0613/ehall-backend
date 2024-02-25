@@ -35,7 +35,7 @@ def score_rank_handler(school_name: str, token: str, requestdata: dict) -> tuple
 def course_table_handler(school_name: str, token: str, requestdata: dict) -> tuple[dict, int]:
     if token is None:
         return {'status': 'error', 'message': 'auth_token not found'}, 400
-    semester = requestdata.get('semester', "2023-2024-2")
+    semester = requestdata.get('semester', "")
     service = importlib.import_module(f'services.{school_name}.course_table_service')
 
     return service.get_course_table(school_name, token, semester)
