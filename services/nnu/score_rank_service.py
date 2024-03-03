@@ -49,7 +49,7 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
     response_json2 = response_school_score.json()
     if response_json1['datas']['jxbcjtjcx']['extParams']['code'] != 1 or \
             response_json2['datas']['jxbcjtjcx']['extParams']['code'] != 1:
-        return {'status': 'invalid', 'message': 'Failed to get score rank.Params are probably invalid'}, 401
+        return {'status': 'invalid', 'message': 'Failed to get score rank.Params are probably invalid'}, 400
 
     res_data = {"status": "OK", "message": "Score rank retrieved successfully", "data": {
         "class": {"highScore": response_json1['datas']['jxbcjtjcx']['rows'][0]['ZGF'],
