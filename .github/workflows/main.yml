@@ -27,8 +27,12 @@ jobs:
     - name: Build executable
       run: pyinstaller --onefile app.py
 
-    - name: Upload Artifacts
+    - name: Rename executable
+      run: Rename-Item dist/app.exe dist/build-windows.exe
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: executable
-        path: dist/
+        name: build-windows.exe
+        path: dist/build-windows.exe
+
