@@ -1,3 +1,5 @@
+import logging
+
 from waitress import serve
 from flask import Flask, request
 from handlers.login_handler import cas_login_handler
@@ -44,4 +46,9 @@ def course_table(school_name):
 
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8080)
+    host = '0.0.0.0'
+    port = 8080
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger('waitress')
+    logger.setLevel(logging.INFO)
+    serve(app, host=host, port=port)
