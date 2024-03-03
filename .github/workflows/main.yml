@@ -3,20 +3,49 @@ name: Build Application
 on:
   push:
     branches:
-      - main 
-  workflow_dispatch:  
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest  
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            python-version: '3.11'
+            arch: x64
+            pyinstaller_target: windows
+          - os: ubuntu-latest
+            python-version: '3.11'
+            arch: x64
+            pyinstaller_target: linux
+          - os: ubuntu-latest
+            python-version: '3.11'
+            arch: arm64
+            pyinstaller_target: linux
+          - os: macos-latest
+            python-version: '3.11'
+            arch: x64
+            pyinstaller_target: macos
+          - os: macos-latest
+            python-version: '3.11'
+            arch: arm64
+            pyinstaller_target: macos
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
+    - name: Set up QEMU
+      if: startsWith(matrix.os, 'ubuntu') && matrix.arch == 'arm64'
+      uses: docker/setup-qemu-action@v1
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.11'
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.arch }}
 
     - name: Install dependencies
       run: |
@@ -25,11 +54,11 @@ jobs:
         pip install -r requirements.txt
         
     - name: Build executable
-      run: pyinstaller --onefile --name ehall-backend app.py
+      run: pyinstaller --onefile --name ehall-backend-${{ matrix.pyinstaller_target }}-${{ matrix.arch }} app.py
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: build-windows
+        name: ehall-backend-${{ matrix.os }}-${{ matrix.arch }}
         path: dist/
 
