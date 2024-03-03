@@ -49,7 +49,6 @@ def course_table(school_name):
 if __name__ == '__main__':
     # get the host and port from the environment variable
     host = os.getenv('HOST', '0.0.0.0')
-    port = int(os.getenv('PORT', 5000))
-
+    port = int(os.getenv('PORT', 8080))
     print(f'Starting server at {host}:{port}')
     serve(app, host=host, port=port)

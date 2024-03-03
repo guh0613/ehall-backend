@@ -46,7 +46,7 @@ jobs:
         pip install -r requirements.txt
         
     - name: Build executable
-      run: pyinstaller --onefile --name ehall-backend-${{ matrix.pyinstaller_target }} app.py
+      run: pyinstaller --onefile --name ehall-backend_${{ matrix.pyinstaller_target }} app.py
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
