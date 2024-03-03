@@ -16,10 +16,6 @@ jobs:
             python-version: '3.11'
             arch: x64
             pyinstaller_target: windows-x64
-          - os: windows-latest
-            python-version: '3.11'
-            arch: x86
-            pyinstaller_target: windows-x86
           - os: ubuntu-latest
             python-version: '3.11'
             arch: x64
@@ -41,7 +37,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-        architecture: ${{ matrix.arch == 'x86' && matrix.os == 'windows-latest' ? 'x86' : 'x64' }}
+        architecture: ${{ matrix.arch }}
 
     - name: Install dependencies
       run: |
