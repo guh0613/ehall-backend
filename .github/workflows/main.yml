@@ -21,18 +21,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller waitress
+        pip install pyinstaller
         pip install -r requirements.txt
         
     - name: Build executable
-      run: pyinstaller --onefile app.py
-
-    - name: Rename executable
-      run: Rename-Item dist/app.exe dist/build-windows.exe
+      run: pyinstaller --onefile --name ehall-backend app.py
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: build-windows.exe
-        path: dist/build-windows.exe
+        name: build-windows
+        path: dist/
 
