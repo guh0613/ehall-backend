@@ -1,3 +1,4 @@
+from waitress import serve
 from flask import Flask, request
 from handlers.login_handler import cas_login_handler
 from handlers.user_handler import user_info_handler, user_score_handler, score_rank_handler, course_table_handler
@@ -43,4 +44,4 @@ def course_table(school_name):
 
 
 if __name__ == '__main__':
-    app.run()
+    serve(app, host='0.0.0.0', port=8080)
