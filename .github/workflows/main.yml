@@ -15,37 +15,33 @@ jobs:
           - os: windows-latest
             python-version: '3.11'
             arch: x64
-            pyinstaller_target: windows
+            pyinstaller_target: windows-x64
+          - os: windows-latest
+            python-version: '3.11'
+            arch: x86
+            pyinstaller_target: windows-x86
           - os: ubuntu-latest
             python-version: '3.11'
             arch: x64
-            pyinstaller_target: linux
-          - os: ubuntu-latest
-            python-version: '3.11'
-            arch: arm64
-            pyinstaller_target: linux
+            pyinstaller_target: linux-x64
           - os: macos-latest
             python-version: '3.11'
             arch: x64
-            pyinstaller_target: macos
+            pyinstaller_target: macos-x64
           - os: macos-latest
             python-version: '3.11'
             arch: arm64
-            pyinstaller_target: macos
+            pyinstaller_target: macos-arm64
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up QEMU
-      if: startsWith(matrix.os, 'ubuntu') && matrix.arch == 'arm64'
-      uses: docker/setup-qemu-action@v1
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-        architecture: ${{ matrix.arch }}
+        architecture: ${{ matrix.arch == 'x86' && matrix.os == 'windows-latest' ? 'x86' : 'x64' }}
 
     - name: Install dependencies
       run: |
@@ -54,11 +50,11 @@ jobs:
         pip install -r requirements.txt
         
     - name: Build executable
-      run: pyinstaller --onefile --name ehall-backend-${{ matrix.pyinstaller_target }}-${{ matrix.arch }} app.py
+      run: pyinstaller --onefile --name ehall-backend-${{ matrix.pyinstaller_target }} app.py
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ehall-backend-${{ matrix.os }}-${{ matrix.arch }}
+        name: ehall-backend_${{ matrix.os }}-${{ matrix.arch }}
         path: dist/
 
