@@ -14,7 +14,7 @@ def refresh_mod_auth_cas(school_name, castgc):
     s = requests.Session()
     s.headers.update(get_auth_headers(school_name))
     s.cookies.set('CASTGC', castgc)
-    auth_response = s.get(cas_url, verify=False)
+    auth_response = s.get(cas_url)
     if auth_response.history:
         for resp in auth_response.history:
             location = resp.headers.get('Location')

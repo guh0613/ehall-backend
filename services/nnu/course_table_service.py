@@ -20,7 +20,7 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
         del s.headers['Referer']
 
     query_weu_url = ehall_url + '/appShow?appId=4770397878132218'
-    response = s.get(query_weu_url, verify=False)
+    response = s.get(query_weu_url)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get course table.Please try again'}, 402
 
@@ -29,13 +29,13 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
     query_no_location_url = ehallapp_url + '/jwapp/sys/wdkb/nnuWdkbController/queryXskbForNnu.do'
     if semester == "":
         query_semester_url = ehallapp_url + '/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do'
-        response = s.get(query_semester_url, verify=False)
+        response = s.get(query_semester_url)
         semester = response.json()['datas']['dqxnxq']['rows'][0]['DM']
 
     query_no_location_data = {
         'requestParamStr': f'{{"XNXQDM":"{semester}","SKZC":1}}'
     }
-    response = s.post(query_no_location_url, data=query_no_location_data, verify=False)
+    response = s.post(query_no_location_url, data=query_no_location_data)
     response_list1 = transfer_json_data(response.json())
     result = {'status': 'OK', 'message': 'Course table retrieved successfully',
               'data': {'not_arranged': response_list1, 'arranged': []}}
@@ -46,7 +46,7 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
         '*order': '+KSJC'
     }
 
-    response = s.post(query_course_table_url, data=query_course_table_data, verify=False)
+    response = s.post(query_course_table_url, data=query_course_table_data)
     response_list2 = transfer_json_data(response.json(), False)
     result['data']['arranged'] = response_list2
     return result, 200

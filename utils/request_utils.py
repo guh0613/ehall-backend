@@ -45,7 +45,7 @@ def general_cas_login(school_name: str, username: str, password: str) -> request
     s = requests.Session()
     s.headers.update(get_auth_headers(school_name))
 
-    auth_response = s.get(cas_url, verify=False)
+    auth_response = s.get(cas_url)
 
     # check the response body,and use regex to find the password salt and execution
     pattern = (r'<input type="hidden" id="pwdEncryptSalt" value="(.+?)" /><input type="hidden" id="execution" '
@@ -73,5 +73,5 @@ def general_cas_login(school_name: str, username: str, password: str) -> request
 
     }
 
-    submit_response = s.post(cas_url, data=submit_data, headers=get_auth_headers(school_name), verify=False)
+    submit_response = s.post(cas_url, data=submit_data, headers=get_auth_headers(school_name))
     return submit_response

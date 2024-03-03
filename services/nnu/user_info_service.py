@@ -18,7 +18,7 @@ def get_user_info(school_name: str, token: str) -> tuple[dict, int]:
     s.headers.update(default_header)
 
     query_url = ehall_url + '//jsonp/ywtb/info/getUserInfoAndSchoolInfo.json'
-    response = s.get(query_url, verify=False)
+    response = s.get(query_url)
 
     # check if the response is valid, and get 'username', 'userid', 'userType', 'userDepartment',  'userSex'
     if response.status_code != 200:

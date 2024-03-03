@@ -21,7 +21,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
 
     # get weu first,it will automatically be set-cookie
     query_weu_url = ehall_url + '/appShow?appId=4768574631264620'
-    response = s.get(query_weu_url, verify=False)
+    response = s.get(query_weu_url)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get user score.Please try again'}, 402
 
@@ -29,7 +29,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
 
     query_score_url = ehallapp_url + '/jwapp/sys/cjcx/modules/cjcx/xscjcx.do'
     query_score_data = get_query_score_data(semester, amount)
-    response = s.post(query_score_url, data=query_score_data, verify=False)
+    response = s.post(query_score_url, data=query_score_data)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get user score.Please try again'}, 402
     # get the response json

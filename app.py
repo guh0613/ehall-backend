@@ -1,4 +1,5 @@
 import logging
+import os
 
 from waitress import serve
 from flask import Flask, request
@@ -46,9 +47,9 @@ def course_table(school_name):
 
 
 if __name__ == '__main__':
-    host = '0.0.0.0'
-    port = 8080
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger('waitress')
-    logger.setLevel(logging.INFO)
+    # get the host and port from the environment variable
+    host = os.getenv('HOST', '0.0.0.0')
+    port = int(os.getenv('PORT', 5000))
+
+    print(f'Starting server at {host}:{port}')
     serve(app, host=host, port=port)

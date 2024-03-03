@@ -21,11 +21,11 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
 
     # get userid
     query_user_info_url = ehall_url + '/jsonp/ywtb/info/getUserInfoAndSchoolInfo'
-    response = s.get(query_user_info_url, verify=False)
+    response = s.get(query_user_info_url)
     user_id = response.json()['data']['userId']
 
     query_weu_url = ehall_url + '/appShow?appId=4768574631264620'
-    response = s.get(query_weu_url, verify=False)
+    response = s.get(query_weu_url)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get user score.Please try again'}, 402
 
@@ -43,8 +43,8 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
         'KCH': course_id,
         'TJLX': '02'
     }
-    response_class_score = s.post(query_score_url, data=query_class_score_data, verify=False)
-    response_school_score = s.post(query_score_url, data=query_school_score_data, verify=False)
+    response_class_score = s.post(query_score_url, data=query_class_score_data)
+    response_school_score = s.post(query_score_url, data=query_school_score_data)
     response_json1 = response_class_score.json()
     response_json2 = response_school_score.json()
     if response_json1['datas']['jxbcjtjcx']['extParams']['code'] != 1 or \
@@ -77,8 +77,8 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
         'TJLX': '02',
         '*order': '+DJDM'
     }
-    response_class_people = s.post(query_people_url, data=query_class_people_data, verify=False)
-    response_school_people = s.post(query_people_url, data=query_school_people_data, verify=False)
+    response_class_people = s.post(query_people_url, data=query_class_people_data)
+    response_school_people = s.post(query_people_url, data=query_school_people_data)
     response_json = {'class': response_class_people.json(), 'school': response_school_people.json()}
     if response_json['class']['datas']['jxbcjfbcx']['extParams']['code'] != 1 or \
             response_json['school']['datas']['jxbcjfbcx']['extParams']['code'] != 1:
@@ -108,8 +108,8 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
         'KCH': course_id,
         'TJLX': '02'
     }
-    response_class_rank = s.post(query_rank_url, data=query_class_rank_data, verify=False)
-    response_school_rank = s.post(query_rank_url, data=query_school_rank_data, verify=False)
+    response_class_rank = s.post(query_rank_url, data=query_class_rank_data)
+    response_school_rank = s.post(query_rank_url, data=query_school_rank_data)
     response_json = {'class': response_class_rank.json(), 'school': response_school_rank.json()}
     if response_json['class']['datas']['jxbxspmcx']['extParams']['code'] != 1 or \
             response_json['school']['datas']['jxbxspmcx']['extParams']['code'] != 1:
