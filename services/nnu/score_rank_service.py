@@ -11,7 +11,7 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:
-        return {'status': 'error', 'message': 'Failed to get user score. auth_token is probably invalid.'}, 401
+        return {'status': 'error', 'message': 'Failed to get user score. authToken is probably invalid.'}, 401
 
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)
@@ -84,14 +84,14 @@ def get_score_rank(school_name: str, token: str, course_id: str, class_id: str, 
             response_json['school']['datas']['jxbcjfbcx']['extParams']['code'] != 1:
         return {'status': 'invalid', 'message': 'Failed to get score rank.Params are probably invalid'}, 401
 
-    res_data['data']['class']['90num'] = response_json['class']['datas']['jxbcjfbcx']['rows'][0].get('DJSL', 0)
-    res_data['data']['school']['90num'] = response_json['school']['datas']['jxbcjfbcx']['rows'][0].get('DJSL', 0)
+    res_data['data']['class']['numAbove90'] = response_json['class']['datas']['jxbcjfbcx']['rows'][0].get('DJSL', 0)
+    res_data['data']['school']['numAbove90'] = response_json['school']['datas']['jxbcjfbcx']['rows'][0].get('DJSL', 0)
 
     # process class and school in one loop
     for i in range(len(response_json['class']['datas']['jxbcjfbcx']['rows'])):
-        res_data['data']['class'][f'{90 - i * 10}num'] = response_json['class']['datas']['jxbcjfbcx']['rows'][i].get(
+        res_data['data']['class'][f'numAbove{90 - i * 10}' if i != 4 else 'numBelow60'] = response_json['class']['datas']['jxbcjfbcx']['rows'][i].get(
             'DJSL', 0)
-        res_data['data']['school'][f'{90 - i * 10}num'] = response_json['school']['datas']['jxbcjfbcx']['rows'][i].get(
+        res_data['data']['school'][f'numAbove{90 - i * 10}' if i != 4 else 'numBelow60'] = response_json['school']['datas']['jxbcjfbcx']['rows'][i].get(
             'DJSL', 0)
 
     query_rank_url = ehallapp_url + '/jwapp/sys/cjcx/modules/cjcx/jxbxspmcx.do'

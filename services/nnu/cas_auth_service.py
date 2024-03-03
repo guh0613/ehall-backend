@@ -22,7 +22,7 @@ def cas_authenticate(school_name: str, username: str, password: str) -> tuple[di
             cas_cache_utils.set_mod_auth_cas(castgc, mod_auth_cas)
             return {'status': 'OK',
                     'message': 'Login successful',
-                    'auth_token': castgc}, 200
+                    'authToken': castgc}, 200
     else:
         return {'status': 'error', 'message': 'Failed to login.Please check your username or password'}, 400
 

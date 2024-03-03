@@ -11,7 +11,7 @@ def get_user_info(school_name: str, token: str) -> tuple[dict, int]:
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:
-        return {'status': 'error', 'message': 'Failed to get user info. auth_token is probably invalid.'}, 401
+        return {'status': 'error', 'message': 'Failed to get user info. authToken is probably invalid.'}, 401
     # get user info
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)

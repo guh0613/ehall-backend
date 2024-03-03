@@ -41,7 +41,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
   {
       "status": "OK",
       "message": "Login successful",
-      "auth_token": "TGT-114514-xxxxxx"
+      "authToken": "TGT-114514-xxxxxx"
   }
   ```
 
@@ -62,7 +62,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求头
 
-- `Authorization`: `auth_token`
+- `Authorization`: `authToken`
 
 #### 成功响应
 
@@ -97,7 +97,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求头
 
-- `Authorization`: `auth_token`
+- `Authorization`: `authToken`
 
 #### 请求体（仅POST方法）
   ```json
@@ -124,8 +124,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       {
         "courseName": "绳之以法的正确姿势概论",
         "examTime": "2024-01-17",
-        "courseId": "114514",
-        "classId": "1919810",
+        "courseID": "114514",
+        "classID": "1919810",
         "totalScore": 100,
         "gradePoint": "5.0",
         "regularScore": "100",
@@ -157,14 +157,14 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求头
 
-- `Authorization`: `auth_token`
+- `Authorization`: `authToken`
 
 #### 请求体
 
   ```json
   {
-    "courseid": "114514",
-    "classid": "1919810",
+    "courseID": "114514",
+    "classID": "1919810",
     "semester": "2023-2024-1"
   }
   ```
@@ -186,9 +186,9 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "lowScore": 70,
       "highScore": 98,
       "averageScore": 90,
-      "90num": 60,
-      "80num": 26,
-      "70num": 10
+      "numAbove90": 60,
+      "numAbove80": 26,
+      "numAbove70": 10
     },
     "school": {
       "rank": 1149,
@@ -196,18 +196,18 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "lowScore": 39,
       "highScore": 100,
       "averageScore": 80,
-      "90num": 4000,
-      "80num": 800,
-      "70num": 25,
-      "60num": 1,
-      "50num": 1
+      "numAbove90": 4000,
+      "numAbove80": 800,
+      "numAbove70": 25,
+      "numAbove60": 1,
+      "numBelow60": 1
     }
   }
   }
   ```
   **注：**
-- `50num`字段表示不及格人数，而非50分以上。
-- 低分数段若是没有人，则不会出现在响应数据中。如该学科最低分为70分，则不会出现`50num`和`60num`字段。
+- 分数段为10分一个区间，如`numAbove80`表示80-90分的人数。
+- 低分数段若是没有人，则不会出现在响应数据中。如该学科最低分为70分，则不会出现`numAbove60`和`numBelow60`字段。
 
 ###  课程表
 - **请求URL**:
@@ -220,7 +220,7 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 
 #### 请求头
 
-- `Authorization`: `auth_token`
+- `Authorization`: `authToken`
 
 #### 请求体(仅POST方法)
   ```json
@@ -241,8 +241,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "arranged": [
         {
           "courseName": "品史",
-          "classId": "114514",
-          "courseId": "1919810",
+          "classID": "114514",
+          "courseID": "1919810",
           "credit": 2,
           "creditHour": 36,
           "semester": "2023-2024-2",
@@ -255,8 +255,8 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
       "not_arranged": [
         {
           "courseName": "拉史",
-          "classId": "514114",
-          "courseId": "8109191",
+          "classID": "514114",
+          "courseID": "8109191",
           "credit": 0,
           "creditHour": 9,
           "semester": "2023-2024-2",
@@ -275,14 +275,14 @@ ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服�
 部分特殊错误可能需要客户端进行特定处理，其响应会有特定的状态码及`status`字段。
 
 ### 认证过期
-请求头中的`auth_token`无效或过期。
+请求头中的`authToken`无效或过期。
 
 - **代码**：401
 - **响应示例**:
     ```json
     {
         "status": "invalid",
-        "message": "Failed to get user info.auth_token is probably invalid"
+        "message": "Failed to get user info.authToken is probably invalid"
     }
     ```
   

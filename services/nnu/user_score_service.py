@@ -11,7 +11,7 @@ def get_user_score(school_name: str, token: str, semester: str, amount: int) -> 
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:
-        return {'status': 'error', 'message': 'Failed to get user score. auth_token is probably invalid.'}, 401
+        return {'status': 'error', 'message': 'Failed to get user score. authToken is probably invalid.'}, 401
 
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)
@@ -68,8 +68,8 @@ def transform_data(original_json):
     for row in original_json.get("datas", {}).get("xscjcx", {}).get("rows", []):
         course_data = {
             "courseName": row.get("XSKCM", "Unknown Course"),
-            "courseId": row.get("KCH", ""),
-            "classId": row.get("JXBID", ""),
+            "courseID": row.get("KCH", ""),
+            "classID": row.get("JXBID", ""),
             "examTime": row.get("KSSJ", ""),
             "totalScore": row.get("ZCJ", 0),
             "gradePoint": str(round(row.get("XFJD", 0), 1)),
