@@ -15,11 +15,7 @@ async def user_score_handler(school_name: str, token: str, requestdata: dict) ->
     semester = requestdata.get('semester', "2022-2023-2,2023-2024-1")
     amount = requestdata.get('amount', 10)
     isneedrank = requestdata.get('isNeedRank', False)
-    if isneedrank == "true":
-        isneedrank = True
-    elif isneedrank == "false":
-        isneedrank = False
-    elif not isinstance(isneedrank, bool):
+    if not isinstance(isneedrank, bool):
         return {'status': 'error', 'message': 'isNeedRank must be true or false'}, 400
 
     service = importlib.import_module(f'services.{school_name}.user_score_service')
