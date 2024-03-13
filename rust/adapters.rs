@@ -7,31 +7,33 @@ use async_trait::async_trait;
 use axum::{body::Body, extract::Request, response::Response};
 use futures::future::BoxFuture;
 use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll},
+    fmt::Debug, future::Future, pin::Pin, task::{Context, Poll}
 };
 use tower::{BoxError, Service};
 
 #[async_trait]
-pub trait SchoolAdapter {
-    async fn login(&self, login: &LoginType) -> Result<(), String>;
-
-    async fn fetch_user_info(&self) -> Result<Info, String>;
-
-    async fn fetch_scores(&self) -> Result<Vec<Score>, String> {
+pub trait SchoolAdapter: Debug {
+    async fn login(&mut self, login: LoginType) -> Result<(), String> {
         unimplemented!()
     }
 
-    async fn fetch_course_table(&self) -> Result<Vec<CourseTable>, String> {
+    async fn fetch_user_info(&mut self) -> Result<Info, String> {
         unimplemented!()
     }
 
-    async fn fetch_exam_schedule(&self) -> Result<ExamSchedule, String> {
+    async fn fetch_scores(&mut self) -> Result<Vec<Score>, String> {
         unimplemented!()
     }
 
-    async fn fetch_notifications(&self) -> Result<Vec<Notification>, String> {
+    async fn fetch_course_table(&mut self) -> Result<Vec<CourseTable>, String> {
+        unimplemented!()
+    }
+
+    async fn fetch_exam_schedule(&mut self) -> Result<ExamSchedule, String> {
+        unimplemented!()
+    }
+
+    async fn fetch_notifications(&mut self) -> Result<Vec<Notification>, String> {
         unimplemented!()
     }
 }

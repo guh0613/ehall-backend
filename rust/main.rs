@@ -1,33 +1,29 @@
 use axum::{
-    extract::{self, Path},
-    http::StatusCode,
-    response::IntoResponse,
-    routing::{get, post},
-    Json, Router,
+    middleware, response::Response, routing::{get, post}, Router
 };
-use ehall_backend::{
-    models::{LoginRequest, LoginResponse},
-};
+use dashmap::DashMap;
+use ehall_backend::routes::{route_static, routes_hello};
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+    // DashMap::new::<String, Box<dyn SchoolAdapter
 
-    let app = Router::new()
-        .route("/", get(root))
-        .route("/:school_name/cas_login", post(cas_login_handler));
+    let routes_all = Router::new()
+        .merge(routes_hello())
+        .layer(middleware::map_response(main_response_mapper))
+        .fallback_service(route_static());
+    // .route("/:school_name/cas_login", post(cas_login_handler));
 
     let listner = tokio::net::TcpListener::bind("0.0.0.0:8070").await.unwrap();
-    axum::serve(listner, app).await.unwrap();
+    axum::serve(listner, routes_all).await.unwrap();
 }
 
-async fn root() -> &'static str {
-    "Hello, World!"
+// MARKER: response mapper
+
+async fn main_response_mapper(res: Response) -> Response {
+    println!("->> {:<12} - main_response_mapper", "RES_MAPPER");
+    println!();
+    res
 }
 
-async fn cas_login_handler(
-    Path(school_name): Path<String>,
-    login_data: Json<LoginRequest>,
-) -> (StatusCode, Json<LoginResponse>) {
-    unimplemented!()
-}
