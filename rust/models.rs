@@ -10,7 +10,7 @@ use uuid::Uuid;
 use crate::adapters::{nnu, SchoolAdapter};
 use crate::error::{Error, Result};
 
-use self::user::LoginType;
+use self::user::{Info, LoginType, Score};
 
 // MARKER: Model Controller
 #[derive(Debug, Clone)]
@@ -39,9 +39,32 @@ impl ModelController {
             }
             _ => unimplemented!(),
         };
+
+        // We use uuid to index the user, at least for the time being.
         let auth_token = Uuid::new_v4().to_string();
         self.user_store.insert(auth_token.clone(), adapter);
         Ok(auth_token)
+    }
+
+    pub fn delete_user(&self, t: &AuthToken) -> Result<()> {
+        // how to implement this in one line
+        if self.user_store.remove(t).is_some() {
+            Ok(())
+        } else {
+            Err(Error::DeleteUserFail)
+        }
+    }
+
+    // pub async fn user_info(&self, t: &AuthToken) -> Result<Info> {
+    //     if let Some(mut k) = self.user_store.get_mut(t) {
+    //         k.fetch_user_info().await.map_err(|_| Error::FetchUserInfoFail)
+    //     } else {
+    //         Err(Error::InvalidAuthToken)
+    //     }
+    // }
+
+    pub async fn is_valid_auth_token(&self, t: &AuthToken) -> bool {
+        self.user_store.contains_key(t)
     }
 }
 

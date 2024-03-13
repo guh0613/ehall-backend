@@ -1,5 +1,10 @@
 # ehall-backend
-ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服务端可向不同学校的一站式事务大厅后端服务器获取各类数据。
+<!-- ehall-backend是一个纯api式的服务端，使用Flask框架运行。该服务端可向不同学校的一站式事务大厅后端服务器获取各类数据。 -->
+The rust version of ehall-backend project. Focus on Scalability, maintainability and Performance.
+The project is designed to work with axum. Runtime and transport layer independence is not a goal, at least for the time being.
+
+## Contributing
+To adapt with your school, simply implement the ehall_backend::SchoolAdapter trait and everything will work.
 
 ## 部署
 您可从[Actions构建](https://github.com/Kernelize/ehall-backend/actions)中下载最新的可执行文件，或者自行构建。  
