@@ -3,8 +3,7 @@ pub mod user;
 use std::sync::Arc;
 
 use dashmap::DashMap;
-use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
+use serde::{Deserialize, Serialize}; use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::adapters::{nnu, SchoolAdapter};
