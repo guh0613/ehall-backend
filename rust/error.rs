@@ -8,6 +8,8 @@ pub enum Error {
     FetchUserInfoFail,
     InvalidAuthToken,
     DeleteUserFail,
+    FetchUserScoreFail,
+    SchoolNotSupported,
 }
 
 impl std::fmt::Display for Error {

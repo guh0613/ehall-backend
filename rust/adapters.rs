@@ -18,7 +18,7 @@ use std::{
 use tower::{BoxError, Service};
 
 #[async_trait]
-pub trait SchoolAdapter: Debug + Send {
+pub trait SchoolAdapter: Debug {
     async fn login(&mut self, login: LoginType) -> Result<()> {
         unimplemented!()
     }
