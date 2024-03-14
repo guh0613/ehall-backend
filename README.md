@@ -6,7 +6,14 @@ The project is designed to work with axum. Runtime and transport layer independe
 ## Contributing
 To adapt with your school, simply implement the ehall_backend::SchoolAdapter trait and everything will work.
 
-## 部署
+## 部署(Rust)
+Run:
+```bash
+cargo r -r
+```
+默认的监听地址为`0.0.0.0:8070`
+
+## 部署(Python)
 您可从[Actions构建](https://github.com/Kernelize/ehall-backend/actions)中下载最新的可执行文件，或者自行构建。  
 Actions构建的可执行文件已包含`waitress`WSGI服务器，可直接运行。  
 默认的监听地址为`0.0.0.0:8080`，可通过环境变量`HOST`与`PORT`修改。

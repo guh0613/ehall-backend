@@ -10,6 +10,7 @@ pub enum Error {
     DeleteUserFail,
     FetchUserScoreFail,
     SchoolNotSupported,
+    LoginMethodNotSupported,
 }
 
 impl std::fmt::Display for Error {

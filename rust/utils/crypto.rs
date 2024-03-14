@@ -13,6 +13,11 @@ pub fn aes_cbc_encrypt_url(data: &[u8], key: &[u8; 16]) -> Vec<u8> {
     encode(ct_bytes).into()
 }
 
+// pub fn random_vec<const N: usize>() -> [u8; N] {
+//     let mut rng = thread_rng();
+//     let x: [u8; N] = rng.gen::<[u8; N]>();
+// }
+
 #[cfg(test)]
 mod test {
     use super::aes_cbc_encrypt_url;

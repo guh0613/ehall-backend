@@ -1,15 +1,10 @@
 use axum::{
     middleware,
     response::Response,
-    routing::{get, post},
     Router,
 };
-use dashmap::DashMap;
 use ehall_backend::routes::{route_static, routes_hello, routes_login};
-use ehall_backend::{
-    error::{Error, Result},
-    routes::AppState,
-};
+use ehall_backend::{error::Result, routes::AppState};
 
 #[tokio::main]
 async fn main() -> Result<()> {
