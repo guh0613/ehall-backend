@@ -1,13 +1,14 @@
 use crate::{
     adapters::{LoginType, SchoolAdapter},
     error::{Error, Result},
-    models::{user::Info, AuthToken, UsrPwd},
+    models::{user::{Info, Score}, AuthToken, UsrPwd},
     utils::cas::cas_login,
 };
 use async_trait::async_trait;
 use axum::http::header;
 use lazy_static::lazy_static;
 use reqwest::{header::{HeaderMap, HeaderValue, COOKIE}, Client};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 const CAS_SERVER_URL: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
@@ -79,6 +80,21 @@ impl SchoolAdapter for Adapter {
     }
 
     async fn fetch_user_info(&mut self) -> Result<Info> {
+        #[derive(Serialize, Deserialize)]
+        struct UserInfoResponse {
+            data: Data,
+        }
+
+        #[derive(Serialize, Deserialize)]
+        #[serde(rename_all="camelCase")]
+        struct Data {
+            user_name: String,
+            user_id: String,
+            user_typename: String,
+            user_department: String,
+            user_sex: String,
+        }
+
         let Some(ref castgc) = self.castgc else {
             return Err(Error::FetchUserInfoFail);
         };
@@ -88,10 +104,11 @@ impl SchoolAdapter for Adapter {
             .default_headers(header_map)
             .build().unwrap();
         let res = client.get(USER_INFO_URL).send().await.map_err(|_| Error::FetchUserInfoFail)?;
-        let json = res.json::<HashMap<String, String>>().await.map_err(|_| Error::FetchUserInfoFail)?;
-        // let Some(data) = json[]
-        
-        Err(Error::FetchUserInfoFail)
+        let data = res.json::<UserInfoResponse>().await.map_err(|_| Error::FetchUserInfoFail)?.data;
+        Ok(Info::new(data.user_name, data.user_id, data.user_typename, data.user_department, data.user_sex))
     }
 
+    async fn fetch_scores(&mut self) -> Result<Vec<Score>> {
+        Err(Error::FetchUserScoreFail)
+    }
 }
