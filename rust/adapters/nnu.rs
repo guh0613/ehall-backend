@@ -1,19 +1,20 @@
 use crate::{
     adapters::{LoginType, SchoolAdapter},
     error::{Error, Result},
-    models::{AuthToken, UsrPwd},
+    models::{user::Info, AuthToken, UsrPwd},
     utils::cas::cas_login,
 };
 use async_trait::async_trait;
+use axum::http::header;
 use lazy_static::lazy_static;
-use reqwest::{
-    header::{HeaderMap, HeaderValue, REFERER},
-};
+use reqwest::{header::{HeaderMap, HeaderValue, COOKIE}, Client};
+use std::collections::HashMap;
 
 const CAS_SERVER_URL: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
 const AUTH_HEADER: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
 const EHALL_SERVER_URL: &str = "https://ehall.nnu.edu.cn";
 const EHALL_APP_SERVER_URL: &str = "https://ehallapp.nnu.edu.cn";
+const USER_INFO_URL: &str = "https://ehall.nnu.edu.cn//jsonp/ywtb/info/getUserInfoAndSchoolInfo.json";
 
 lazy_static! {
     static ref HEADERS: HeaderMap = {
@@ -57,6 +58,9 @@ impl Adapter {
             castgc: None,
         }
     }
+
+    pub async fn refresh_ticket() {
+    }
 }
 
 #[async_trait]
@@ -73,4 +77,21 @@ impl SchoolAdapter for Adapter {
         self.castgc = Some(castgc);
         Ok(())
     }
+
+    async fn fetch_user_info(&mut self) -> Result<Info> {
+        let Some(ref castgc) = self.castgc else {
+            return Err(Error::FetchUserInfoFail);
+        };
+        let mut header_map = HeaderMap::new();
+        header_map.insert(COOKIE, HeaderValue::from_str(&format!("MOD_AUTH_CAS={}", castgc)).unwrap());
+        let client = Client::builder()
+            .default_headers(header_map)
+            .build().unwrap();
+        let res = client.get(USER_INFO_URL).send().await.map_err(|_| Error::FetchUserInfoFail)?;
+        let json = res.json::<HashMap<String, String>>().await.map_err(|_| Error::FetchUserInfoFail)?;
+        // let Some(data) = json[]
+        
+        Err(Error::FetchUserInfoFail)
+    }
+
 }
