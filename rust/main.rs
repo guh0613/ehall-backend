@@ -1,14 +1,18 @@
-use axum::{
-    middleware,
-    response::Response,
-    Router,
-};
+use axum::{middleware, response::Response, Router};
 use ehall_backend::routes::{route_static, routes_hello, routes_login};
 use ehall_backend::{error::Result, routes::AppState};
+use tracing::{debug, Level};
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
+    // tracing_subscriber::fmt::init();
+    env_logger::init();
+    // let subscriber = FmtSubscriber::builder()
+    //     .with_max_level(Level::DEBUG)
+    //     .with_env_filter(EnvFilter::from_default_env())
+    //     .finish();
+    // tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
     let app = AppState::new().await;
 
     let routes_all = Router::new()
