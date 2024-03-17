@@ -9,6 +9,7 @@ pub enum Error {
     InvalidAuthToken,
     DeleteUserFail,
     FetchUserScoreFail,
+    FetchUserRankFail,
     SchoolNotSupported,
     LoginMethodNotSupported,
 }
