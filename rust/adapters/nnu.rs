@@ -6,7 +6,7 @@ use crate::{
     adapters::{LoginType, SchoolAdapter},
     error::{Error, Result},
     models::{
-        user::{Info, Score},
+        user::{AllRank, Info, Rank, Score},
         AuthToken, UsrPwd,
     },
     utils::cas::cas_login,
@@ -16,15 +16,13 @@ use axum::{
     extract::Query,
     http::{header, response},
 };
-use futures::future::join_all;
+use futures::stream::FuturesUnordered;
 use lazy_static::lazy_static;
 use reqwest::{
     header::{HeaderMap, HeaderValue, COOKIE},
     Client, StatusCode,
 };
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::collections::HashMap;
 
 const CAS_SERVER_URL: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
 const AUTH_HEADER: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
@@ -232,7 +230,7 @@ impl Adapter {
         course_id: &str,
         class_id: &str,
         semester: &str,
-    ) -> Result<Vec<Score>> {
+    ) -> Result<AllRank> {
         let Ok(info) = self.get_info().await else {
             return Err(Error::FetchUserRankFail);
         };
@@ -256,91 +254,106 @@ impl Adapter {
             .await
             .map_err(|_| Error::FetchUserRankFail)?;
 
-        #[derive(Serialize, Deserialize)]
-        struct ScoreResponse {
-            datas: Datas,
+        let urls = vec![
+            "/jwapp/sys/cjcx/modules/cjcx/jxbcjtjcx.do",
+            "/jwapp/sys/cjcx/modules/cjcx/jxbcjtjcx.do",
+            "/jwapp/sys/cjcx/modules/cjcx/jxbcjfbcx.do",
+            "/jwapp/sys/cjcx/modules/cjcx/jxbcjfbcx.do",
+            "/jwapp/sys/cjcx/modules/cjcx/jxbxspmcx.do",
+            "/jwapp/sys/cjcx/modules/cjcx/jxbxspmcx.do",
+        ];
+
+        let data = vec![
+            vec![("JXBID", class_id), ("XNXQDM", semester), ("TJLX", "01")],
+            vec![
+                ("JXBID", "*"),
+                ("XNXQDM", semester),
+                ("KCH", course_id),
+                ("TJLX", "02"),
+            ],
+            vec![
+                ("JXBID", class_id),
+                ("XNXQDM", semester),
+                ("TJLX", "01"),
+                ("*order", "+DJDM"),
+            ],
+            vec![
+                ("JXBID", "*"),
+                ("XNXQDM", semester),
+                ("KCH", course_id),
+                ("TJLX", "02"),
+                ("*order", "+DJDM"),
+            ],
+            vec![
+                ("XH", &user_id),
+                ("JXBID", class_id),
+                ("XNXQDM", semester),
+                ("TJLX", "01"),
+            ],
+            vec![
+                ("XH", &user_id),
+                ("JXBID", "*"),
+                ("XNXQDM", semester),
+                ("KCH", course_id),
+                ("TJLX", "02"),
+            ],
+        ];
+
+        let futs = FuturesUnordered::new();
+
+        for fut in (urls.into_iter().zip(data.into_iter()))
+            .map(|(url, data)| client.post(url).form(&data).send())
+        {
+            futs.push(fut);
         }
 
-        #[derive(Serialize, Deserialize)]
-        struct Datas {
-            jxbcjtjcx: Jxbcjtjcx,
-            jxbcjfbcx: Jxbcjfbcx,
-            jxbxspmcx: Jxbxspmcx,
-        }
+        let res = try_join_all(futs)
+            .await
+            .map_err(|_| Error::FetchUserRankFail)?
+            .into_iter()
+            .map(|res| res.json::<serde_json::Value>())
+            .collect::<Vec<_>>();
 
-        #[derive(Serialize, Deserialize)]
-        struct Jxbcjtjcx {
-            rows: Vec<Row>,
-        }
+        let res = try_join_all(res)
+            .await
+            .map_err(|_| Error::FetchUserRankFail)?;
 
-        #[derive(Serialize, Deserialize)]
-        struct Jxbcjfbcx {
-            rows: Vec<Row>,
-        }
+        let (csr, ssr, cpr, spr, crr, srr) = (
+            &res[0].as_object().unwrap()["datas"]["jxbcjtjcx"]["rows"],
+            &res[1].as_object().unwrap()["datas"]["jxbcjtjcx"]["rows"],
+            &res[2].as_object().unwrap()["datas"]["jxbcjfbcx"]["rows"],
+            &res[3].as_object().unwrap()["datas"]["jxbcjfbcx"]["rows"],
+            &res[4].as_object().unwrap()["datas"]["jxbxspmcx"]["rows"],
+            &res[5].as_object().unwrap()["datas"]["jxbxspmcx"]["rows"],
+        );
 
-        #[derive(Serialize, Deserialize)]
-        struct Jxbxspmcx {
-            rows: Vec<Row>,
-        }
+        let class_rank = Rank::new(
+            crr[0]["PM"].as_i64().unwrap(),
+            crr[0]["ZRS"].as_i64().unwrap(),
+            csr[0]["ZGF"].as_i64().unwrap(),
+            csr[0]["ZDF"].as_i64().unwrap(),
+            csr[0]["PJF"].as_i64().unwrap(),
+            cpr[0]["DJSL"].as_i64(),
+            cpr[1]["DJSL"].as_i64(),
+            cpr[2]["DJSL"].as_i64(),
+            cpr[3]["DJSL"].as_i64(),
+            cpr[4]["DJSL"].as_i64(),
+        );
 
-        #[derive(Serialize, Deserialize)]
-        struct Row {
-            zgf: f64,
-            zdf: f64,
-            pjf: f64,
-            djsl: Option<i32>,
-            pm: i32,
-            zrs: i32,
-        }
+        let school_rank = Rank::new(
+            srr[0]["PM"].as_i64().unwrap(),
+            srr[0]["ZRS"].as_i64().unwrap(),
+            ssr[0]["ZGF"].as_i64().unwrap(),
+            ssr[0]["ZDF"].as_i64().unwrap(),
+            ssr[0]["PJF"].as_i64().unwrap(),
+            spr[0]["DJSL"].as_i64(),
+            spr[1]["DJSL"].as_i64(),
+            spr[2]["DJSL"].as_i64(),
+            spr[3]["DJSL"].as_i64(),
+            spr[4]["DJSL"].as_i64(),
+        );
 
-        let tasks = [
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbcjtjcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"JXBID": class_id, "XNXQDM": semester, "TJLX": "01"}))
-            .send(),
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbcjtjcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"JXBID": "*", "XNXQDM": semester, "KCH": course_id, "TJLX": "02"}))
-            .send(),
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbcjfbcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"JXBID": class_id, "XNXQDM": semester, "TJLX": "01", "*order": "+DJDM"}))
-            .send(),
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbcjfbcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"JXBID": "*", "XNXQDM": semester, "KCH": course_id, "TJLX": "02", "*order": "+DJDM"}))
-            .send(),
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbxspmcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"XH": user_id, "JXBID": class_id, "XNXQDM": semester, "TJLX": "01"}))
-            .send(),
-        client.post(format!("{}/jwapp/sys/cjcx/modules/cjcx/jxbxspmcx.do", EHALL_APP_SERVER_URL))
-            .json(&json!({"XH": user_id, "JXBID": "*", "XNXQDM": semester, "KCH": course_id, "TJLX": "02"}))
-            .send(),
-    ];
-
-        let res = join_all(tasks).await;
-
-        let res = join_all(
-            res
-                .into_iter()
-                .map(|res| async {
-                    let score_res: ScoreResponse = res
-                        .map_err(|_| Error::FetchUserRankFail)?
-                        .json()
-                        .await
-                        .map_err(|_| Error::FetchUserRankFail)?;
-                    Ok(score_res)
-                })
-                .collect::<Vec<_>>(),
-        )
-        .await
-        .into_iter()
-        .collect::<Result<Vec<_>>>()?;
-
-        let class_score_response = &res[0].datas.jxbcjtjcx.rows[0];
-        let school_score_response = &res[1].datas.jxbcjtjcx.rows[0];
-        let class_people_response = &res[2].datas.jxbcjfbcx.rows[0];
-        let school_people_response = &res[3].datas.jxbcjfbcx.rows[0];
-        let class_rank_response = &res[4].datas.jxbxspmcx.rows[0];
-        let school_rank_response = &res[5].datas.jxbxspmcx.rows[0];
-
-        Err(Error::FetchUserRankFail)
+        Ok(AllRank::new(class_rank, school_rank))
     }
 }
 

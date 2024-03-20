@@ -13,7 +13,13 @@ pub struct Info {
 }
 
 impl Info {
-    pub fn new(user_name: String, user_id: String, user_type: String, user_department: String, user_sex: String) -> Self {
+    pub fn new(
+        user_name: String,
+        user_id: String,
+        user_type: String,
+        user_department: String,
+        user_sex: String,
+    ) -> Self {
         Self {
             user_name,
             user_id,
@@ -25,8 +31,7 @@ impl Info {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct Score {
-}
+pub struct Score {}
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct AllRank {
@@ -36,15 +41,16 @@ pub struct AllRank {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct Rank {
-    rank: i32,
-    total_people_num: i32,
-    low_score: i32,
-    average_score: i32,
-    num_above90: Option<i32>,
-    num_above80: Option<i32>,
-    num_above70: Option<i32>,
-    num_above60: Option<i32>,
-    num_below60: Option<i32>,
+    rank: i64,
+    total_people_num: i64,
+    high_score: i64,
+    low_score: i64,
+    average_score: i64,
+    num_above90: Option<i64>,
+    num_above80: Option<i64>,
+    num_above70: Option<i64>,
+    num_above60: Option<i64>,
+    num_below60: Option<i64>,
 }
 
 impl Score {
@@ -60,10 +66,22 @@ impl AllRank {
 }
 
 impl Rank {
-    pub fn new(rank: i32, total_people_num: i32, low_score: i32, average_score: i32, num_above90: Option<i32>, num_above80: Option<i32>, num_above70: Option<i32>, num_above60: Option<i32>, num_below60: Option<i32>) -> Self {
+    pub fn new(
+        rank: i64,
+        total_people_num: i64,
+        high_score: i64,
+        low_score: i64,
+        average_score: i64,
+        num_above90: Option<i64>,
+        num_above80: Option<i64>,
+        num_above70: Option<i64>,
+        num_above60: Option<i64>,
+        num_below60: Option<i64>,
+    ) -> Self {
         Self {
             rank,
             total_people_num,
+            high_score,
             low_score,
             average_score,
             num_above90,
