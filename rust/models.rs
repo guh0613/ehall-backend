@@ -5,6 +5,7 @@ use std::sync::Arc;
 use dashmap::DashMap;
 use serde::{Deserialize, Serialize}; use tokio::sync::Mutex;
 use uuid::Uuid;
+use tracing::info;
 
 use crate::adapters::{nnu, SchoolAdapter};
 use crate::error::{Error, Result};
@@ -43,6 +44,7 @@ impl ModelController {
         let auth_token = Uuid::new_v4().to_string();
         self.user_store
             .insert(auth_token.clone(), Mutex::new(adapter));
+        info!("Stored user with auth token: {}, school: {:?}", auth_token, school);
         Ok(auth_token)
     }
 
@@ -60,7 +62,9 @@ impl ModelController {
     }
 
     pub async fn user_info(&self, t: &AuthToken) -> Result<Info> {
+        info!("Step 0");
         if let Some(v) = self.user_store.get_mut(t) {
+            info!("User found: {}", t);
             v.lock().await.fetch_user_info().await
         } else {
             Err(Error::FetchUserInfoFail)
@@ -118,6 +122,31 @@ impl LoginResponse {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct UserInfoResponse {
+    status: String,
+    message: String,
+    scores: Option<Info>,
+}
+
+impl UserInfoResponse {
+    pub fn new_ok(s: Info) -> Self {
+        Self {
+            status: "Ok".to_owned(),
+            message: "User info retrieved successfully".to_owned(),
+            scores: Some(s),
+        }
+    }
+
+    pub fn new_fail(m: String) -> Self {
+        Self {
+            status: "Failed".to_owned(),
+            message: m,
+            scores: None,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub enum School {
     NanjingNormalUniversity,
     YanShanUniversity,

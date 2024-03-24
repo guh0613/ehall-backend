@@ -3,7 +3,7 @@ import re
 import requests
 
 from utils.common_utils import get_cas_url
-from utils.encryption_utils import aes_cbc_encrypt_url, aes_cbc_encrypt_url_test, random_string
+from utils.encryption_utils import aes_cbc_encrypt_url, random_string
 
 default_header = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",

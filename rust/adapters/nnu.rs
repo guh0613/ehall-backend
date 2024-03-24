@@ -5,24 +5,18 @@ mod score;
 use crate::{
     adapters::{LoginType, SchoolAdapter},
     error::{Error, Result},
-    models::{
-        user::{AllRank, Info, Rank, Score},
-        AuthToken, UsrPwd,
-    },
+    models::user::{AllRank, Info, Rank, Score},
     utils::cas::cas_login,
 };
 use async_trait::async_trait;
-use axum::{
-    extract::Query,
-    http::{header, response},
-};
-use futures::stream::FuturesUnordered;
+use futures::future::try_join_all;
 use lazy_static::lazy_static;
 use reqwest::{
     header::{HeaderMap, HeaderValue, COOKIE},
     Client, StatusCode,
 };
 use serde::{Deserialize, Serialize};
+use tracing::{info, span};
 
 const CAS_SERVER_URL: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
 const AUTH_HEADER: &str = "https://authserver.nnu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.nnu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.nnu.edu.cn%2Fywtb-portal%2Fstandard%2Findex.html%23%2FWorkBench%2Fworkbench";
@@ -110,18 +104,22 @@ impl Adapter {
             .send()
             .await
             .map_err(|_| Error::FetchUserInfoFail)?;
-        let data = res
-            .json::<UserInfoResponse>()
-            .await
-            .map_err(|_| Error::FetchUserInfoFail)?
-            .data;
-        Ok(Info::new(
-            data.user_name,
-            data.user_id,
-            data.user_typename,
-            data.user_department,
-            data.user_sex,
-        ))
+        info!("step 1");
+        println!("response: {:?}", res.text().await);
+        Err(Error::FetchUserInfoFail)
+        // let data = res
+        //     .json::<UserInfoResponse>()
+        //     .await
+        //     .map_err(|_| Error::FetchUserInfoFail)?
+        //     .data;
+        // info!("step 2");
+        // Ok(Info::new(
+        //     data.user_name,
+        //     data.user_id,
+        //     data.user_typename,
+        //     data.user_department,
+        //     data.user_sex,
+        // ))
     }
 
     async fn refresh_ticket() {}
@@ -130,6 +128,7 @@ impl Adapter {
         let Some(ref castgc) = self.castgc else {
             return Err(Error::FetchUserScoreFail);
         };
+        info!("Step 1");
 
         let mut header_map = HeaderMap::new();
         header_map.insert(
@@ -144,6 +143,7 @@ impl Adapter {
         if client.get(WEU_COOKIE_URL).send().await.unwrap().status() != StatusCode::OK {
             return Err(Error::FetchUserScoreFail);
         }
+        info!("Step 2");
 
         #[derive(Serialize, Deserialize)]
         #[serde(rename_all = "camelCase")]
@@ -299,13 +299,11 @@ impl Adapter {
             ],
         ];
 
-        let futs = FuturesUnordered::new();
-
-        for fut in (urls.into_iter().zip(data.into_iter()))
+        let futs = urls
+            .into_iter()
+            .zip(data.into_iter())
             .map(|(url, data)| client.post(url).form(&data).send())
-        {
-            futs.push(fut);
-        }
+            .collect::<Vec<_>>();
 
         let res = try_join_all(futs)
             .await
@@ -360,6 +358,9 @@ impl Adapter {
 #[async_trait]
 impl SchoolAdapter for Adapter {
     async fn login(&mut self, login: LoginType) -> Result<()> {
+        let s = span!(tracing::Level::INFO, "nnu::SchoolAdapter");
+        let _guard = s.enter();
+
         let LoginType::Password((u, p)) = login else {
             return Err(Error::LoginMethodNotSupported);
         };
@@ -367,6 +368,7 @@ impl SchoolAdapter for Adapter {
         let header_map = HeaderMap::new();
         // header_map.insert(REFERER, HeaderValue::from_static(AUTH_HEADER));
         let (ticket, castgc) = cas_login(CAS_SERVER_URL, header_map, &u, &p).await?;
+        info!("User {} logged in successfully with castgc: {}, ticket: {}", u, castgc, ticket);
         self.ticket = Some(ticket);
         self.castgc = Some(castgc);
         Ok(())

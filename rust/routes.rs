@@ -5,9 +5,11 @@ use axum::{
     Json, Router,
 };
 
+use axum_auth::AuthBearer;
+
 use crate::{
     error::Result,
-    models::{LoginRequest, LoginResponse, ModelController, School},
+    models::{LoginRequest, LoginResponse, ModelController, School, UserInfoResponse},
 };
 
 // MARKER: AppState
@@ -28,10 +30,26 @@ pub async fn cas_login_handler(
         .map(|t| Json(LoginResponse::new_ok(t)))
 }
 
+pub async fn user_info_handler(
+    AuthBearer(t): AuthBearer,
+    State(app): State<AppState>,
+) -> Result<Json<UserInfoResponse>> {
+    app.mc
+        .user_info(&t)
+        .await
+        .map(|t| Json(UserInfoResponse::new_ok(t)))
+}
+
 // MARKER: static routers
 pub fn routes_login(app: AppState) -> Router {
     Router::new()
         .route("/:school_name/cas_login", post(cas_login_handler))
+        .with_state(app)
+}
+
+pub fn routes_user_info(app: AppState) -> Router {
+    Router::new()
+        .route("/:school_name/user/info", get(user_info_handler))
         .with_state(app)
 }
 
