@@ -1,9 +1,9 @@
 [project]
 name = "ehall-backend"
-version = "0.3.1"
+version = "0.3.2"
 description = "Default template for PDM package"
 authors = [
-    { name = "Genisys", email = "17355439+guh0613@users.noreply.github.com" },
+    { name = "Genisys", email = "guh0613@icloud.com" },
 ]
 dependencies = [
     "blinker>=1.8.2",
