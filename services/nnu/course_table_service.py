@@ -11,7 +11,7 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
 
     mod_auth_cas = get_mod_auth_cas(school_name, token)
     if mod_auth_cas is None:
-        return {'status': 'error', 'message': 'Failed to get course table. auth_token is probably invalid.'}, 401
+        return {'status': 'error', 'message': 'Failed to get course table. authToken is probably invalid.'}, 401
 
     s = requests.Session()
     s.cookies.set('MOD_AUTH_CAS', mod_auth_cas)
@@ -20,7 +20,7 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
         del s.headers['Referer']
 
     query_weu_url = ehall_url + '/appShow?appId=4770397878132218'
-    response = s.get(query_weu_url, verify=False)
+    response = s.get(query_weu_url)
     if response.status_code != 200:
         return {'status': 'retry', 'message': 'Failed to get course table.Please try again'}, 402
 
@@ -29,13 +29,13 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
     query_no_location_url = ehallapp_url + '/jwapp/sys/wdkb/nnuWdkbController/queryXskbForNnu.do'
     if semester == "":
         query_semester_url = ehallapp_url + '/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do'
-        response = s.get(query_semester_url, verify=False)
+        response = s.get(query_semester_url)
         semester = response.json()['datas']['dqxnxq']['rows'][0]['DM']
 
     query_no_location_data = {
         'requestParamStr': f'{{"XNXQDM":"{semester}","SKZC":1}}'
     }
-    response = s.post(query_no_location_url, data=query_no_location_data, verify=False)
+    response = s.post(query_no_location_url, data=query_no_location_data)
     response_list1 = transfer_json_data(response.json())
     result = {'status': 'OK', 'message': 'Course table retrieved successfully',
               'data': {'not_arranged': response_list1, 'arranged': []}}
@@ -46,7 +46,7 @@ def get_course_table(school_name: str, token: str, semester: str) -> tuple[dict,
         '*order': '+KSJC'
     }
 
-    response = s.post(query_course_table_url, data=query_course_table_data, verify=False)
+    response = s.post(query_course_table_url, data=query_course_table_data)
     response_list2 = transfer_json_data(response.json(), False)
     result['data']['arranged'] = response_list2
     return result, 200
@@ -59,13 +59,13 @@ def transfer_json_data(json_data: dict, isnolocation: bool = True) -> list:
         result = []
         for item in data:
             result.append({
-                'course_name': item['KCM'],
-                'course_id': item['KCH'],
-                'class_id': item['JXBID'],
+                'courseName': item['KCM'],
+                'courseID': item['KCH'],
+                'classID': item['JXBID'],
                 'teacher': item['SKJS'],
                 'week': item['SKZC'],
                 'credit': item['XF'],
-                'credit_hour': item['XS'],
+                'creditHour': item['XS'],
                 'semester': item['XNXQDM']
             })
         return result
@@ -78,8 +78,8 @@ def transfer_json_data(json_data: dict, isnolocation: bool = True) -> list:
             time = extract_weekday_time(item['YPSJDD'])
             result.append({
                 'courseName': item['KCM'],
-                'courseId': item['KCH'],
-                'classId': item['JXBID'],
+                'courseID': item['KCH'],
+                'classID': item['JXBID'],
                 'teacher': item['SKJS'],
                 'classroom': item['JASMC'],
                 'week': item['ZCMC'],
@@ -91,9 +91,7 @@ def transfer_json_data(json_data: dict, isnolocation: bool = True) -> list:
         return result
 
 
-# 修改函数直接返回指定格式的字符串
 def extract_weekday_time(data):
-    # 定义映射星期的字典
     weekday_map = {
         "一": "1",
         "二": "2",
@@ -104,12 +102,10 @@ def extract_weekday_time(data):
         "日": "7"
     }
 
-    # 分割字符串，处理每个时间段
     segments = data.split(",")
     results = []
 
     for segment in segments:
-        # 提取星期和时间
         weekday = ""
         for key, value in weekday_map.items():
             if f"星期{key}" in segment:
@@ -118,10 +114,8 @@ def extract_weekday_time(data):
 
         time_info = segment.split(" ")[2].split("节")[0]
 
-        # 拼接结果
         results.append(f"{weekday}:{time_info}")
 
-    # 将结果合并为字符串
     result_str = ",".join(results)
 
     return result_str
