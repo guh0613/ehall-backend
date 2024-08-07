@@ -19,11 +19,15 @@ Actions构建的可执行文件已包含`waitress`WSGI服务器，可直接运�
 ## 开发
 环境要求：Python 3.10+
 
-1. 安装依赖
+### 1. 安装依赖
+
+使用支持[PEP 621](https://peps.python.org/pep-0621/)的工具安装依赖，如`poetry`或`pdm`，推荐使用`pdm`。
 ```shell
-pip install -r requirements.txt
+pdm init
+pdm install
 ```
-2. 运行
+
+### 2. 运行
 ```shell
 flask run
 ```
