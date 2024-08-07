@@ -1,0 +1,31 @@
+[project]
+name = "ehall-backend"
+version = "0.3.1"
+description = "Default template for PDM package"
+authors = [
+    { name = "Genisys", email = "17355439+guh0613@users.noreply.github.com" },
+]
+dependencies = [
+    "blinker>=1.8.2",
+    "cachetools>=5.4.0",
+    "certifi>=2024.7.4",
+    "charset-normalizer>=3.3.2",
+    "click>=8.1.7",
+    "Flask>=3.0.3",
+    "idna>=3.7",
+    "itsdangerous>=2.2.0",
+    "Jinja2>=3.1.4",
+    "MarkupSafe>=2.1.5",
+    "pycryptodome>=3.20.0",
+    "requests>=2.32.3",
+    "urllib3>=2.2.2",
+    "Werkzeug>=3.0.3",
+    "ddddocr>=1.5.5",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = { text = "MIT" }
+
+
+[tool.pdm]
+distribution = false
