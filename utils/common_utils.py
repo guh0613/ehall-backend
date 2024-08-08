@@ -1,21 +1,16 @@
 from configs import config
 
 
-def get_cas_url(school_name: str) -> str:
+def get_cas_url() -> str:
     """return the CAS URL for the specified school."""
-    return config.CAS_SERVER_URLS.get(school_name, None)
+    return config.CAS_SERVER_URL
 
 
-def get_ehall_url(school_name: str) -> str:
+def get_ehall_url() -> str:
     """return the eHall URL for the specified school."""
-    return config.EHALL_SERVER_URLS.get(school_name, None)
+    return config.EHALL_SERVER_URL
 
 
-def get_ehallapp_url(school_name: str, ishttps: bool = True) -> str:
+def get_ehallapp_url() -> str:
     """return the eHallApp URL for the specified school."""
-    if ishttps:
-        return config.EHALLAPP_SERVER_URLS.get(school_name, None)
-    else:
-        # convert https url to http url
-        url = config.EHALLAPP_SERVER_URLS.get(school_name, None)
-        return url
+    return config.EHALLAPP_SERVER_URL

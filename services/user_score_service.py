@@ -3,11 +3,10 @@ import asyncio
 import aiohttp
 from aiohttp import CookieJar
 
-from utils.nnu.cas_cache_utils import get_mod_auth_cas
+from services.score_rank_service import get_score_rank
+from utils.cas_cache_utils import get_mod_auth_cas
 from utils.common_utils import get_ehall_url, get_ehallapp_url
 from utils.request_utils import default_header
-
-from services.nnu.score_rank_service import get_score_rank
 
 
 async def get_user_score(school_name: str, token: str, semester: str, amount: int, is_need_rank: bool) -> tuple[dict, int]:

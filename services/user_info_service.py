@@ -1,8 +1,8 @@
 import requests
 
+from utils.cas_cache_utils import get_mod_auth_cas
 from utils.common_utils import get_ehall_url
 from utils.request_utils import default_header
-from utils.nnu.cas_cache_utils import get_mod_auth_cas
 
 
 def get_user_info(school_name: str, token: str) -> tuple[dict, int]:
