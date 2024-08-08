@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from handlers.login_handler import cas_login_handler
-from models.login_model import CasLoginRequest
+from models.login.cas_login_model import CasLoginRequest
 
 router = APIRouter()
 

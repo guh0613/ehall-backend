@@ -1,4 +1,4 @@
-from models.login_model import CasLoginRequest
+from models.login.cas_login_model import CasLoginRequest
 from services.cas_auth_service import cas_authenticate
 
 
